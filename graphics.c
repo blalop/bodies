@@ -1,4 +1,4 @@
-#include "map.h"
+#include "graphics.h"
 
 #include <gtk/gtk.h>
 
@@ -6,13 +6,13 @@ static GtkWidget *window;
 static GtkWidget *canvas;
 static GtkWidget *vbox;
 static GtkWidget *button;
-static GdkGC *map_gc;
+static GdkGC *graphics_gc;
 
 static void quit () {
     gtk_exit(0);
 }
 
-void map_init(unsigned short cols, unsigned short rows, action_func_t facc) {
+void graphics_init(int cols, int rows, action_func_t facc) {
     gtk_init(NULL, NULL);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -31,16 +31,16 @@ void map_init(unsigned short cols, unsigned short rows, action_func_t facc) {
     gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
     gtk_signal_connect_object(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(facc), NULL);
     gtk_widget_show(button);
-    
+
     gtk_widget_show(window);
-    map_gc = gdk_gc_new(canvas->window);
+    graphics_gc = gdk_gc_new(canvas->window);
     gtk_main();
 }
 
-void map_draw_dot(unsigned short col, unsigned short row) {
-    gdk_draw_point(canvas->window, map_gc, col, row);
+void graphics_draw_dot(int col, int row) {
+    gdk_draw_point(canvas->window, graphics_gc, col, row);
 }
 
-void map_draw_rectangle(unsigned short col, unsigned short row, unsigned short width, unsigned short length) {
-    gdk_draw_rectangle(canvas->window, map_gc, TRUE, col, row, width, length);
+void graphics_draw_rectangle(int col, int row, int width, int length) {
+    gdk_draw_rectangle(canvas->window, graphics_gc, TRUE, col, row, width, length);
 }

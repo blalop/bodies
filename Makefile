@@ -1,12 +1,12 @@
 CC = gcc
-CFLAGS = -Wall
-GTKFLAGS = `pkg-config --cflags --libs gtk+-2.0`
+CFLAGS = -Wall -Werror -Wfatal-errors -std=c11
+CFLAGS_GTK = `pkg-config --cflags --libs gtk+-2.0`
 
-nbody: map.o nbody.o
-	$(CC) $(CFLAGS) $^ -o $@ $(GTKFLAGS)
+nbody: graphics.o nbody.o bitmap.o
+	$(CC) $(CFLAGS) $^ -o $@ $(CFLAGS_GTK)
 
-map.o: map.c map.h
-	$(CC) $(CFLAGS) -c $< -o $@ $(GTKFLAGS)
+graphics.o: graphics.c graphics.h
+	$(CC) $(CFLAGS) -c $< -o $@ $(CFLAGS_GTK)
 	
 .PHONY: clean
 clean:

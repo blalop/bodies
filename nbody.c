@@ -1,11 +1,14 @@
-
-#include "map.h"
+#include "bitmap.h"
+#include "graphics.h"
 
 void draw() {
-    map_draw_rectangle(40, 40, 20, 20);
+    for(int i = 0; i < 50; i++)
+        graphics_draw_rectangle(i, i, 20, 20);
 }
 
 int main(void) {
-    map_init(800, 600, draw);
+    graphics_init(800, 600, draw);
+    unsigned int *bmp = bitmap_create(4);
+    bitmap_set_bit(bmp, 2); 
     return 0;
 }
