@@ -37,7 +37,7 @@ void graphics_init(int cols, int rows, action_func_t facc) {
     gtk_main();
 }
 
-void graphics_draw_dot(int col, int row) {
+void graphics_draw_point(int col, int row) {
     gdk_draw_point(canvas->window, graphics_gc, col, row);
 }
 
