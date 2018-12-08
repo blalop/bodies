@@ -1,19 +1,19 @@
 #include "graphics.hh"
 
-graphics::graphics(QWidget *parent, int height, int width) : QWidget(parent) {
+Graphics::Graphics(QWidget *parent, int height, int width) : QWidget(parent) {
     this->resize(height, width);
-    this->image = QImage(height, width, QImage::Format_Mono);
-    this->image.fill(0);
+    this->image = QImage(height, width, QImage::Format_MonoLSB);
+    this->image.fill(Color::black);
 }
 
-graphics::~graphics() {}
+Graphics::~Graphics() {}
 
-void graphics::refresh(QImage image) {
+void Graphics::refresh(QImage image) {
     this->image.swap(image);
     QWidget::update();
 }
 
-void graphics::paintEvent() {
+void Graphics::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
-    painter.drawImage(0, 0, image);
+    painter.drawImage(0, 0, this->image);
 }

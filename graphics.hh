@@ -5,16 +5,17 @@
 #include <QPainter>
 #include <QWidget>
 
-class graphics : public QWidget {
+class Graphics : public QWidget {
     Q_OBJECT
 
   public:
-    graphics(QWidget *parent, int height, int width);
-    ~graphics();
+    Graphics(QWidget *parent, int height, int width);
+    ~Graphics();
     void refresh(QImage image);
+    enum Color { black, white };
 
   protected:
-    void paintEvent();
+    void paintEvent(QPaintEvent *event);
 
   private:
     QImage image;

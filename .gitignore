@@ -3,5 +3,5 @@
 .qmake.stash
 *.moc
 moc_*
-Makefile*
+Makefile
 nbody
