@@ -7,6 +7,6 @@ TARGET = nbody
 TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
 
-SOURCES += main.cc graphics.cc
+SOURCES += src/main.cc src/graphics.cc
 
-HEADERS += graphics.hh
+HEADERS += src/graphics.hh

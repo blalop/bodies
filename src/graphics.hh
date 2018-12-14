@@ -3,15 +3,15 @@
 
 #include <QImage>
 #include <QPainter>
+#include <QTimer>
 #include <QWidget>
 
 class Graphics : public QWidget {
     Q_OBJECT
 
   public:
-    Graphics(QWidget *parent, int height, int width);
+    Graphics(QWidget *parent, int height, int width, int refresh_rate);
     ~Graphics();
-    void refresh(QImage image);
     enum Color { black, white };
 
   protected:
@@ -19,6 +19,12 @@ class Graphics : public QWidget {
 
   private:
     QImage image;
+    QTimer *timer;
+    int height, width;
+
+  private slots:
+    void calculate();
+
 };
 
 #endif // GRAPHICS_HH
