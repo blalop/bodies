@@ -15,32 +15,41 @@ Graphics::Graphics(QWidget *parent, int height, int width, int refresh_rate) : Q
     this->timer->start(refresh_rate);
 
     srand(time(0));
+
+    for (auto i = 0; i < N; i++) {
+        b[i].x = rand() % this->width;
+        b[i].y = rand() % this->height;
+        b[i].dx = rand() % 2 - 1;
+        b[i].dy = rand() % 2 - 1;
+    }
 }
 
 Graphics::~Graphics() {
     delete this->timer;
 }
 
-void Graphics::calculate() {
-    static int i = 10;
-    static int j = 10;
-    static int deltai = 1;
-    static int deltaj = 1;
-    this->image.setPixel(i, j, black);
-    if (i == this->width-1 || j == this->height-1 || i == 0 || j == 0) {
-        i = rand() % this->width-1;
-        j = rand() % this->height-1;
-        deltai = rand() % 2 - 1;
-        deltai = rand() % 2 - 1;
+void Graphics::drawBody(Body &b) {
+    this->image.setPixel(b.x, b.y, black);
+    if (b.x == this->width-1 || b.y == this->height-1 || b.x == 0 || b.y == 0) {
+        b.x = rand() % this->width;
+        b.y = rand() % this->height;
+        b.dx = rand() % 2 - 1;
+        b.dy = rand() % 2 - 1;
     } else {
-        i += deltai;
-        j += deltaj;
+        b.x = b.x + b.dx;
+        b.y = b.y + b.dy;
     }
-    this->image.setPixel(i, j, white);
+    this->image.setPixel(b.x, b.y, white);
+}
+
+void Graphics::calculate() {
+    for (auto i = 0; i < N; i++) {
+        this->drawBody(b[i]);
+    }
     this->update();
 }
 
-void Graphics::paintEvent(QPaintEvent *event) {
+void Graphics::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.drawImage(0, 0, this->image);
 }

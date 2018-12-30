@@ -6,6 +6,12 @@
 #include <QTimer>
 #include <QWidget>
 
+#define N 10000
+
+struct Body {
+    int x, y, dx, dy;
+};
+
 class Graphics : public QWidget {
     Q_OBJECT
 
@@ -15,12 +21,15 @@ class Graphics : public QWidget {
     enum Color { black, white };
 
   protected:
-    void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *);
 
   private:
     QImage image;
     QTimer *timer;
     int height, width;
+    Body b[N];
+
+    void drawBody(Body &b);
 
   private slots:
     void calculate();
