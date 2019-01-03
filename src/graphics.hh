@@ -1,16 +1,15 @@
 #ifndef GRAPHICS_HH
 #define GRAPHICS_HH
 
+#include "body.hh"
+
 #include <QImage>
 #include <QPainter>
+#include <QPoint>
 #include <QTimer>
 #include <QWidget>
 
 #define N 10000
-
-struct Body {
-    int x, y, dx, dy;
-};
 
 class Graphics : public QWidget {
     Q_OBJECT
@@ -24,16 +23,13 @@ class Graphics : public QWidget {
     void paintEvent(QPaintEvent *);
 
   private:
+    int width, height;
     QImage image;
     QTimer *timer;
-    int height, width;
     Body b[N];
 
-    void drawBody(Body &b);
-
   private slots:
-    void calculate();
-
+    void step();
 };
 
 #endif // GRAPHICS_HH
