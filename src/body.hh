@@ -8,12 +8,16 @@ class Body {
 
   public:
     Body();
-    void reset(int width, int heigth);
+    void place(int width, int heigth);
+    void addForce(Body b);
+    void resetForce();
     QPoint move();
 
   private:
-    int x, y;
-    int vx, vy;
+    double x, y;
+    double vx, vy;
+    double fx, fy;
+    double mass;
 };
 
 #endif // BODY_HH

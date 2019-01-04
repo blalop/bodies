@@ -1,7 +1,2 @@
 .vscode
-*.o
-.qmake.stash
-*.moc
-moc_*
-Makefile
-nbody
+build

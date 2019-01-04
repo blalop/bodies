@@ -9,7 +9,7 @@
 #include <QTimer>
 #include <QWidget>
 
-#define N 10000
+#define N 1000
 
 class Graphics : public QWidget {
     Q_OBJECT

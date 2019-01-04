@@ -10,7 +10,7 @@ Graphics::Graphics(QWidget *parent, int width, int height, int refresh_rate)
     this->image.fill(Color::black);
 
     for (auto i = 0; i < N; i++) {
-        b[i].reset(this->width, this->height);
+        b[i].place(this->width, this->height);
     }
 
     this->timer = new QTimer(this);
@@ -24,6 +24,15 @@ void Graphics::step() {
     this->image.fill(this->Color::black);
 
     for (auto i = 0; i < N; i++) {
+        b[i].resetForce();
+        for (auto j = 0; j < N; j++) {
+            if (i != j) {
+                b[i].addForce(b[j]);
+            }
+        }
+    }
+    for (auto i = 0; i < N; i++) {
+
         QPoint p = b[i].move();
         int x = p.x();
         int y = p.y();
