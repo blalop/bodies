@@ -6,6 +6,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = nbody
 TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
+CONFIG += c++14
 
 SOURCES += src/graphics.cc src/body.cc src/main.cc
 

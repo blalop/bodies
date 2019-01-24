@@ -1,24 +1,24 @@
 #include "graphics.hh"
 
+#include <QPoint>
+
 Graphics::Graphics(QWidget *parent, int width, int height, int refresh_rate)
-    : QWidget(parent) {
-    this->width = width;
-    this->height = height;
+    : QWidget(parent), width(width), height(height), timer(new QTimer) {
+
     this->resize(width, height);
 
     this->image = QImage(width, height, QImage::Format_MonoLSB);
-    this->image.fill(Color::black);
+    this->image.fill(this->Color::black);
 
     for (auto i = 0; i < N; i++) {
         b[i].place(this->width, this->height);
     }
-
-    this->timer = new QTimer(this);
-    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(step()));
+    timer.reset(new QTimer);
+    QObject::connect(this->timer.data(), SIGNAL(timeout()), this, SLOT(step()));
     this->timer->start(refresh_rate);
 }
 
-Graphics::~Graphics() { delete this->timer; }
+Graphics::~Graphics() {}
 
 void Graphics::step() {
     this->image.fill(this->Color::black);

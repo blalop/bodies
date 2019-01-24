@@ -5,7 +5,7 @@
 
 #include <QImage>
 #include <QPainter>
-#include <QPoint>
+#include <QScopedPointer>
 #include <QTimer>
 #include <QWidget>
 
@@ -17,15 +17,15 @@ class Graphics : public QWidget {
   public:
     Graphics(QWidget *parent, int height, int width, int refresh_rate);
     ~Graphics();
-    enum Color { black, white };
 
   protected:
     void paintEvent(QPaintEvent *);
 
   private:
+    enum Color { black, white };
     int width, height;
     QImage image;
-    QTimer *timer;
+    QScopedPointer<QTimer> timer;
     Body b[N];
 
   private slots:
