@@ -1,41 +1,53 @@
 #include "body.hh"
 
-#include <QtMath>
+constexpr double G = 6.6738e-11;
+constexpr double SOLAR_MASS = 1.9884e30;
+constexpr double MIN_MASS = 1e13;
+constexpr double MAX_MASS = 1e17;
+constexpr double E = 1;        // softening parameter
+constexpr double DELTA = 0.01; // deltatime
+constexpr double DRAND_MAX = static_cast<double>(RAND_MAX);
 
-const double G = 6.6738e-11;
-const double SOLAR_MASS = 1.9884e30;
-const double MIN_MASS = 1e15;
-const double MAX_MASS = 1e16;
-const double E = 3e4;   // softening parameter
-const double DELTA = 1; // deltatime
-const double DRAND_MAX = static_cast<double>(RAND_MAX);
+Body::Body()
+    : pos(Vector2D<double>()), vel(Vector2D<double>()),
+      force(Vector2D<double>()), mass(0.0) {}
 
-Body::Body() : x(0), y(0), vx(0), vy(0), fx(0), fy(0) {
-    double rnd = static_cast<double>(qrand());
-    this->mass = (MAX_MASS - MIN_MASS) * rnd / DRAND_MAX + MIN_MASS;
+void Body::set(int width, int height) {
+    double m = static_cast<double>(qrand());
+    this->mass = (MAX_MASS - MIN_MASS) * m / DRAND_MAX + MIN_MASS;
+
+    double x = static_cast<double>(qrand() % width);
+    double y = static_cast<double>(qrand() % height);
+    this->pos = Vector2D<double>(x, y);
 }
 
-void Body::place(int width, int height) {
-    this->x = qrand() % width;
-    this->y = qrand() % height;
+Vector2D<int> Body::getPos() const {
+    return Vector2D<int>(this->pos.x(), this->pos.y());
 }
 
-void Body::addForce(Body b) {
-    double dx = b.x - this->x;
-    double dy = b.y - this->y;
-    double r = qSqrt(dx * dx + dy * dy);
+bool Body::inMap(Vector2D<int> limits) const {
+    int x = this->pos.x();
+    int y = this->pos.y();
+    return x >= 0 && x < limits.x() && y >= 0 && y < limits.y();
+}
+
+void Body::resetForce() { this->force = Vector2D<double>(); }
+
+void Body::computeForce(const Body b) {
+    Vector2D<double> d = b.pos - this->pos;
+    double r = d.mod();
     double f = (G * this->mass * b.mass) / (r * r + E * E);
-    this->fx += f * dx / r;
-    this->fy += f * dy / r;
+    this->force = this->force + d * f / r;
 }
 
-void Body::resetForce() { this->fx = this->fy = 0; }
-
-QPoint Body::move() {
-    this->vx += this->fx / this->mass * DELTA;
-    this->vy += this->fy / this->mass * DELTA;
-    this->x += this->vx;
-    this->y += this->vy;
-    return QPoint(this->x, this->y);
+void Body::computeVelocity() {
+    this->vel = this->vel + (this->force * DELTA / this->mass);
 }
+void Body::computePosition() { this->pos = this->pos + (this->vel * DELTA); }
 
+void Body::checkCollision(Body &b) {
+    if (this->mass > b.mass && this->pos == b.pos) {
+        this->mass += b.mass;
+        b.mass = 0;
+    }
+}

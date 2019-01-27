@@ -2,6 +2,8 @@
 #define GRAPHICS_HH
 
 #include "body.hh"
+#include "data/vector2d.hh"
+#include "map.hh"
 
 #include <QImage>
 #include <QPainter>
@@ -9,13 +11,11 @@
 #include <QTimer>
 #include <QWidget>
 
-#define N 1000
-
 class Graphics : public QWidget {
     Q_OBJECT
 
   public:
-    Graphics(QWidget *parent, int height, int width, int refresh_rate);
+    Graphics(QWidget *parent, Vector2D<int> dim, int refresh_rate, int n);
     ~Graphics();
 
   protected:
@@ -23,10 +23,10 @@ class Graphics : public QWidget {
 
   private:
     enum Color { black, white };
-    int width, height;
+    Vector2D<int> dim;
     QImage image;
     QScopedPointer<QTimer> timer;
-    Body b[N];
+    Map map;
 
   private slots:
     void step();

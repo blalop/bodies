@@ -1,19 +1,17 @@
 #include "graphics.hh"
 
-#include <QPoint>
+#include "data/vector2d.hh"
 
-Graphics::Graphics(QWidget *parent, int width, int height, int refresh_rate)
-    : QWidget(parent), width(width), height(height), timer(new QTimer) {
+Graphics::Graphics(QWidget *parent, Vector2D<int> dim, int refresh_rate, int n)
+    : QWidget(parent), dim(dim), timer(new QTimer), map(dim, n) {
 
+    int width = dim.x();
+    int height = dim.y();
     this->resize(width, height);
 
     this->image = QImage(width, height, QImage::Format_MonoLSB);
     this->image.fill(this->Color::black);
 
-    for (auto i = 0; i < N; i++) {
-        b[i].place(this->width, this->height);
-    }
-    timer.reset(new QTimer);
     QObject::connect(this->timer.data(), SIGNAL(timeout()), this, SLOT(step()));
     this->timer->start(refresh_rate);
 }
@@ -23,24 +21,18 @@ Graphics::~Graphics() {}
 void Graphics::step() {
     this->image.fill(this->Color::black);
 
-    for (auto i = 0; i < N; i++) {
-        b[i].resetForce();
-        for (auto j = 0; j < N; j++) {
-            if (i != j) {
-                b[i].addForce(b[j]);
-            }
-        }
-    }
-    for (auto i = 0; i < N; i++) {
+    map.compute();
 
-        QPoint p = b[i].move();
-        int x = p.x();
-        int y = p.y();
+    QVector<Vector2D<int>> points = map.getPositions();
+    for (auto point : points) {
+        int x = point.x();
+        int y = point.y();
 
-        if (x > -1 && x < this->width && y > -1 && y < this->height) {
+        if (x >= 0 && x < this->dim.x() && y >= 0 && y < this->dim.y()) {
             this->image.setPixel(x, y, this->Color::white);
         }
     }
+
     this->update();
 }
 

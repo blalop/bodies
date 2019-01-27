@@ -8,6 +8,6 @@ TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
-SOURCES += src/graphics.cc src/body.cc src/main.cc
+SOURCES += src/body.cc src/graphics.cc src/map.cc src/main.cc 
 
-HEADERS += src/graphics.hh src/body.hh
+HEADERS += src/body.hh src/graphics.hh src/map.hh src/data/vector2d.hh

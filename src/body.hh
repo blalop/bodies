@@ -1,22 +1,24 @@
 #ifndef BODY_HH
 #define BODY_HH
 
-#include <QImage>
-#include <QPoint>
+#include "data/vector2d.hh"
 
 class Body {
 
   public:
     Body();
-    void place(int width, int heigth);
-    void addForce(Body b);
+    void set(int width, int height);
+    Vector2D<int> getPos() const;
+    bool inMap(Vector2D<int> dim) const;
+
     void resetForce();
-    QPoint move();
+    void computeForce(const Body b);
+    void computeVelocity();
+    void computePosition();
+    void checkCollision(Body &b);
 
   private:
-    double x, y;
-    double vx, vy;
-    double fx, fy;
+    Vector2D<double> pos, vel, force;
     double mass;
 };
 
