@@ -11,8 +11,8 @@ int main(int argc, char **argv) {
     QApplication app(argc, argv);
     qsrand(QTime::currentTime().msec());
 
-    const int width = 1366;
-    const int height = 768;
+    const int width = 1000;
+    const int height = 1000;
     const Vector2D<int> dim = Vector2D<int>(width, height);
     const int fps = 60;
     const int refresh_rate = 1000 / fps;

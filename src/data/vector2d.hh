@@ -83,26 +83,24 @@ template <typename T> class Vector2D {
         return *this;
     }
 
-    template <typename T1>
-    friend std::ostream &operator<<(std::ostream &s, const Vector2D<T1> v);
+    friend std::ostream &operator<<(std::ostream &s, const Vector2D<T> v) {
+        using std::fixed;
+        using std::setprecision;
+        using std::setw;
+        auto precision = s.precision();
+        auto width = s.width();
+        s << "(";
+        s << fixed << setw(width) << setprecision(precision) << v.px;
+        s << ", ";
+        s << fixed << setw(width) << setprecision(precision) << v.py;
+        s << ")";
+        return s;
+    }
 
   private:
     T px, py;
 };
 
-template <typename T>
-std::ostream &operator<<(std::ostream &s, const Vector2D<T> v) {
-    using std::fixed;
-    using std::setprecision;
-    using std::setw;
-    auto precision = s.precision();
-    auto width = s.width();
-    s << "(";
-    s << fixed << setw(width) << setprecision(precision) << v.px;
-    s << ", ";
-    s << fixed << setw(width) << setprecision(precision) << v.py;
-    s << ")";
-    return s;
-}
+const Vector2D<double> ORIGIN = Vector2D<double>(0, 0);
 
 #endif // VECTOR2D_HH

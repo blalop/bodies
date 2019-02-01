@@ -7,6 +7,7 @@
 #include <QVector>
 
 class Map {
+
   public:
     Map(Vector2D<int> dim, int n);
     QVector<Vector2D<int>> getPositions() const;

@@ -7,7 +7,7 @@ class Body {
 
   public:
     Body();
-    void set(int width, int height);
+    Body(Vector2D<double> pos, Vector2D<double> vel, double mass);
     Vector2D<int> getPos() const;
     bool inMap(Vector2D<int> dim) const;
 
