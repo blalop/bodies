@@ -4,17 +4,17 @@
 #include "body.hh"
 #include "data/vector2d.hh"
 
-#include <QVector>
+#include <vector>
 
 class Map {
 
   public:
     Map(Vector2D<int> dim, int n);
-    QVector<Vector2D<int>> getPositions() const;
+    std::vector<Vector2D<int>> getPositions() const;
     void compute();
 
   private:
-    QVector<Body> pMap;
+    std::vector<Body> pMap;
     Vector2D<int> dim;
 
     void computeForces();

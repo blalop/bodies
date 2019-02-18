@@ -1,14 +1,7 @@
 #ifndef VECTOR2D_HH
 #define VECTOR2D_HH
 
-#ifdef QT_CORE_LIB
-#include <QtMath>
-#define _sqrt(x) qSqrt(x)
-#else
 #include <cmath>
-#define _sqrt(x) std::sqrt(x)
-#endif
-
 #include <iomanip>
 #include <iostream>
 
@@ -28,7 +21,7 @@ template <typename T> class Vector2D {
     T y() const { return this->py; }
 
     double mod() const {
-        return _sqrt(this->px * this->px + this->py * this->py);
+        return std::sqrt(this->px * this->px + this->py * this->py);
     }
 
     Vector2D<T> operator+(const Vector2D<T> v) const {

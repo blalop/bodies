@@ -7,9 +7,10 @@
 
 #include <QImage>
 #include <QPainter>
-#include <QScopedPointer>
 #include <QTimer>
 #include <QWidget>
+
+#include <memory>
 
 class Graphics : public QWidget {
     Q_OBJECT
@@ -25,7 +26,7 @@ class Graphics : public QWidget {
     enum Color { black, white };
     Vector2D<int> dim;
     QImage image;
-    QScopedPointer<QTimer> timer;
+    std::unique_ptr<QTimer> timer;
     Map map;
 
   private slots:

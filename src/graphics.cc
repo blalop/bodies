@@ -12,7 +12,7 @@ Graphics::Graphics(QWidget *parent, Vector2D<int> dim, int refresh_rate, int n)
     this->image = QImage(width, height, QImage::Format_MonoLSB);
     this->image.fill(this->Color::black);
 
-    QObject::connect(this->timer.data(), SIGNAL(timeout()), this, SLOT(step()));
+    QObject::connect(this->timer.get(), SIGNAL(timeout()), this, SLOT(step()));
     this->timer->start(refresh_rate);
 }
 
@@ -23,7 +23,7 @@ void Graphics::step() {
 
     map.compute();
 
-    QVector<Vector2D<int>> points = map.getPositions();
+    std::vector<Vector2D<int>> points = map.getPositions();
     for (auto point : points) {
         int x = point.x();
         int y = point.y();

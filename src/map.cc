@@ -1,5 +1,7 @@
 #include "map.hh"
 
+#include <cstdlib>
+
 constexpr double SOLAR_MASS = 1.9884e30;
 constexpr double MIN_MASS = 1e13;
 constexpr double MAX_MASS = 1e17;
@@ -9,25 +11,26 @@ Map::Map(Vector2D<int> dim, int n) : dim(dim) {
     int width = dim.x();
     int height = dim.y();
     for (auto i = 0; i < n; i++) {
-        double m = static_cast<double>(qrand());
+        double m = static_cast<double>(std::rand());
         double mass = (MAX_MASS - MIN_MASS) * m / DRAND_MAX + MIN_MASS;
 
-        double x = static_cast<double>(qrand() % width);
-        double y = static_cast<double>(qrand() % height);
+        double x = static_cast<double>(rand() % width);
+        double y = static_cast<double>(rand() % height);
         Vector2D<double> pos = Vector2D<double>(x, y);
 
-        double vx = static_cast<double>(qrand() % 3 - 1);
-        double vy = static_cast<double>(qrand() % 3 - 1);
+        double vx = static_cast<double>(rand() % 3 - 1);
+        double vy = static_cast<double>(rand() % 3 - 1);
         Vector2D<double> vel = Vector2D<double>(vx, vy);
+
         pMap.push_back(Body(pos, vel, mass));
     }
 }
 
-QVector<Vector2D<int>> Map::getPositions() const {
-    QVector<Vector2D<int>> points(this->pMap.size());
+std::vector<Vector2D<int>> Map::getPositions() const {
+    std::vector<Vector2D<int>> points(this->pMap.size());
     for (auto body : this->pMap) {
         Vector2D<int> p = body.getPos();
-        points.append(p);
+        points.push_back(p);
     }
     return points;
 }
@@ -39,9 +42,9 @@ void Map::compute() {
 }
 
 void Map::computeForces() {
-    for (auto i = 0; i < this->pMap.size(); i++) {
+    for (std::size_t i = 0; i < this->pMap.size(); i++) {
         this->pMap[i].resetForce();
-        for (auto j = 0; j < this->pMap.size(); j++) {
+        for (std::size_t j = 0; j < this->pMap.size(); j++) {
             if (i != j /*&& this->pMap[i].inMap(dim)*/) {
                 this->pMap[i].computeForce(this->pMap[j]);
                 this->pMap[i].checkCollision(this->pMap[j]);
