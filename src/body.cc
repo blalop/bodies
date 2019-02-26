@@ -6,6 +6,8 @@ constexpr double G = 6.6738e-11;
 constexpr double E = 1; // softening parameter
 constexpr double DELTA = 0.001; // deltatime
 
+const Vector2D<double> ORIGIN = Vector2D<double>(0, 0);
+
 Body::Body() : pos(ORIGIN), vel(ORIGIN), force(ORIGIN), mass(0.0) {}
 
 Body::Body(Vector2D<double> pos, Vector2D<double> vel, double mass)

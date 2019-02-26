@@ -14,12 +14,12 @@ Map::Map(Vector2D<int> dim, int n) : dim(dim) {
         double m = static_cast<double>(std::rand());
         double mass = (MAX_MASS - MIN_MASS) * m / DRAND_MAX + MIN_MASS;
 
-        double x = static_cast<double>(rand() % width);
-        double y = static_cast<double>(rand() % height);
+        double x = static_cast<double>(std::rand() % width);
+        double y = static_cast<double>(std::rand() % height);
         Vector2D<double> pos = Vector2D<double>(x, y);
 
-        double vx = static_cast<double>(rand() % 3 - 1);
-        double vy = static_cast<double>(rand() % 3 - 1);
+        double vx = static_cast<double>(std::rand() % 3 - 1);
+        double vy = static_cast<double>(std::rand() % 3 - 1);
         Vector2D<double> vel = Vector2D<double>(vx, vy);
 
         pMap.push_back(Body(pos, vel, mass));

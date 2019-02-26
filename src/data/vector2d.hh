@@ -11,11 +11,6 @@ template <typename T> class Vector2D {
 
     Vector2D(T x, T y) : px(x), py(y) {}
 
-    template <typename U> Vector2D(Vector2D<U> v) {
-        this->px = v.px;
-        this->py = v.py;
-    }
-
     T x() const { return this->px; }
 
     T y() const { return this->py; }
@@ -94,6 +89,5 @@ template <typename T> class Vector2D {
     T px, py;
 };
 
-const Vector2D<double> ORIGIN = Vector2D<double>(0, 0);
 
 #endif // VECTOR2D_HH

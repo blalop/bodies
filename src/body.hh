@@ -9,7 +9,7 @@ class Body {
     Body();
     Body(Vector2D<double> pos, Vector2D<double> vel, double mass);
     Vector2D<int> getPos() const;
-    bool inMap(Vector2D<int> dim) const;
+    bool inMap(Vector2D<int> limits) const;
 
     void resetForce();
     void computeForce(const Body b);
