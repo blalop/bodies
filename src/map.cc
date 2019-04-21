@@ -1,21 +1,19 @@
 #include "map.hh"
 
+#include "bhtree.hh"
+#include "vector2d.hh"
+
 #include <cstdlib>
 
-constexpr double SOLAR_MASS = 1.9884e30;
-constexpr double MIN_MASS = 1e13;
-constexpr double MAX_MASS = 1e17;
-constexpr double DRAND_MAX = static_cast<double>(RAND_MAX);
-
-Map::Map(Vector2D<int> dim, int n) : dim(dim) {
-    int width = dim.x();
-    int height = dim.y();
+Map::Map(double dim, int n) : dim(dim) {
+    constexpr double DRAND_MAX = static_cast<double>(RAND_MAX);
     for (auto i = 0; i < n; i++) {
         double m = static_cast<double>(std::rand());
-        double mass = (MAX_MASS - MIN_MASS) * m / DRAND_MAX + MIN_MASS;
+        double mass =
+            (Map::MAX_MASS - Map::MIN_MASS) * m / DRAND_MAX + Map::MIN_MASS;
 
-        double x = static_cast<double>(std::rand() % width);
-        double y = static_cast<double>(std::rand() % height);
+        double x = static_cast<double>(std::rand() % static_cast<int>(dim));
+        double y = static_cast<double>(std::rand() % static_cast<int>(dim));
         Vector2D<double> pos = Vector2D<double>(x, y);
 
         double vx = static_cast<double>(std::rand() % 3 - 1);
@@ -36,31 +34,17 @@ std::vector<Vector2D<int>> Map::getPositions() const {
 }
 
 void Map::compute() {
-    computeForces();
-    computeVelocities();
-    computePositions();
-}
-
-void Map::computeForces() {
-    for (std::size_t i = 0; i < this->pMap.size(); i++) {
-        this->pMap[i].resetForce();
-        for (std::size_t j = 0; j < this->pMap.size(); j++) {
-            if (i != j /*&& this->pMap[i].inMap(dim)*/) {
-                this->pMap[i].computeForce(this->pMap[j]);
-                this->pMap[i].checkCollision(this->pMap[j]);
-            }
+    Quadrant quadrant = Quadrant(Vector2D<double>(0, 0), dim);
+    BHTree *bhtree = new BHTree(quadrant);
+    for (auto &body : this->pMap) {
+        if (body.in(quadrant)) {
+            bhtree->insert(&body);
         }
     }
-}
 
-void Map::computeVelocities() {
     for (auto &body : this->pMap) {
+        bhtree->updateForce(&body);
         body.computeVelocity();
-    }
-}
-
-void Map::computePositions() {
-    for (auto &body : this->pMap) {
         body.computePosition();
     }
 }

@@ -4,14 +4,19 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/include/x86_64-linux-gnu/qt5",
-                "/usr/include/x86_64-linux-gnu/qt5/QtWidgets",
-                "/usr/include/x86_64-linux-gnu/qt5/QtGui",
-                "/usr/include/x86_64-linux-gnu/qt5/QtCore",
                 "/usr/include/libdrm",
-                "/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++"
+                "/usr/include/qt",
+                "/usr/include/qt/QtWidgets",
+                "/usr/include/qt/QtGui",
+                "/usr/include/qt/QtCore"
             ],
-            "defines": ["QT_DEPRECATED_WARNINGS", "QT_NO_DEBUG", "QT_WIDGETS_LIB", "QT_GUI_LIB", "QT_CORE_LIB"],
+            "defines": [
+                "QT_DEPRECATED_WARNINGS",
+                "QT_NO_DEBUG",
+                "QT_WIDGETS_LIB",
+                "QT_GUI_LIB",
+                "QT_CORE_LIB"
+            ],
             "compilerPath": "/usr/bin/g++",
             "cppStandard": "c++14",
             "intelliSenseMode": "gcc-x64"

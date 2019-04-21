@@ -2,8 +2,8 @@
 #define GRAPHICS_HH
 
 #include "body.hh"
-#include "data/vector2d.hh"
 #include "map.hh"
+#include "vector2d.hh"
 
 #include <QImage>
 #include <QPainter>
@@ -16,18 +16,19 @@ class Graphics : public QWidget {
     Q_OBJECT
 
   public:
-    Graphics(QWidget *parent, Vector2D<int> dim, int refresh_rate, int n);
-    ~Graphics();
+    Graphics(QWidget *parent, double dim, int n, int i);
 
   protected:
     void paintEvent(QPaintEvent *);
 
   private:
     enum Color { black, white };
-    Vector2D<int> dim;
+    double dim;
+    Map map;
+    int iters, itersCounter;
     QImage image;
     std::unique_ptr<QTimer> timer;
-    Map map;
+    void drawPoints();
 
   private slots:
     void step();

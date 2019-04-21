@@ -6,6 +6,7 @@
 #include <iostream>
 
 template <typename T> class Vector2D {
+
   public:
     Vector2D() : px(0.0), py(0.0) {}
 
@@ -88,6 +89,5 @@ template <typename T> class Vector2D {
   private:
     T px, py;
 };
-
 
 #endif // VECTOR2D_HH
