@@ -16,14 +16,14 @@ class Graphics : public QWidget {
     Q_OBJECT
 
   public:
-    Graphics(QWidget *parent, double dim, int n, int i);
+    Graphics(QWidget *parent, Map map, int iters);
 
   protected:
     void paintEvent(QPaintEvent *);
 
   private:
-    enum Color { black, white };
-    double dim;
+    constexpr static int SIZE = 800;
+    enum Color { BLACK, WHITE };
     Map map;
     int iters, itersCounter;
     QImage image;

@@ -16,10 +16,6 @@ template <typename T> class Vector2D {
 
     T y() const { return this->py; }
 
-    double mod() const {
-        return std::sqrt(this->px * this->px + this->py * this->py);
-    }
-
     Vector2D<T> operator+(const Vector2D<T> v) const {
         return Vector2D(this->px + v.px, this->py + v.py);
     }
@@ -72,17 +68,12 @@ template <typename T> class Vector2D {
         return *this;
     }
 
+    double mod() const {
+        return std::sqrt(this->px * this->px + this->py * this->py);
+    }
+
     friend std::ostream &operator<<(std::ostream &s, const Vector2D<T> v) {
-        using std::fixed;
-        using std::setprecision;
-        using std::setw;
-        auto precision = s.precision();
-        auto width = s.width();
-        s << "(";
-        s << fixed << setw(width) << setprecision(precision) << v.px;
-        s << ", ";
-        s << fixed << setw(width) << setprecision(precision) << v.py;
-        s << ")";
+        s << std::setprecision(2) << "(" << v.px << ", " << v.py << ")";
         return s;
     }
 

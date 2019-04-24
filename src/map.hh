@@ -4,21 +4,21 @@
 #include "body.hh"
 #include "vector2d.hh"
 
+#include <fstream>
 #include <vector>
 
 class Map {
 
   public:
-    Map(double dim, int n);
+    Map();
     std::vector<Vector2D<int>> getPositions() const;
     void compute();
+    friend std::ostream &operator<<(std::ostream &s, const Map map);
+    double dim;
 
   private:
-    std::vector<Body> pMap;
-    double dim;
-    constexpr static double SOLAR_MASS = 1.9884e30;
-    constexpr static double MIN_MASS = 1e13;
-    constexpr static double MAX_MASS = 1e17;
+    std::vector<Body> map;
+    int n;
 };
 
 #endif // MAP_HH

@@ -48,7 +48,7 @@ void BHTree::insert(Body *body) {
 }
 
 void BHTree::updateForce(Body *body) {
-    if (!this->body || *(this->body) == *body) {
+    if (!this->body || this->body == body) {
         return;
     }
     if (this->isInternal()) {

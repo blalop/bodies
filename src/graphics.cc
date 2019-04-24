@@ -2,21 +2,21 @@
 
 #include "vector2d.hh"
 
-Graphics::Graphics(QWidget *parent, double dim, int n, int i)
-    : QWidget(parent), dim(dim), map(dim, n), iters(i), itersCounter(0),
+Graphics::Graphics(QWidget *parent, Map map, int iters)
+    : QWidget(parent), map(map), iters(iters), itersCounter(0),
       timer(new QTimer) {
+    this->resize(Graphics::SIZE, Graphics::SIZE);
 
-    this->resize(dim, dim);
-
-    this->image = QImage(dim, dim, QImage::Format_MonoLSB);
-    this->image.fill(this->Color::black);
+    this->image =
+        QImage(Graphics::SIZE, Graphics::SIZE, QImage::Format_MonoLSB);
+    this->image.fill(this->Color::BLACK);
 
     QObject::connect(this->timer.get(), SIGNAL(timeout()), this, SLOT(step()));
     this->timer->start(0);
 }
 
 void Graphics::step() {
-    this->image.fill(this->Color::black);
+    this->image.fill(this->Color::BLACK);
 
     this->map.compute();
     this->drawPoints();
@@ -34,9 +34,7 @@ void Graphics::drawPoints() {
         int x = point.x();
         int y = point.y();
 
-        if (x >= 0 && x < this->dim && y >= 0 && y < this->dim) {
-            this->image.setPixel(x, y, this->Color::white);
-        }
+        this->image.setPixel(x, y, this->Color::WHITE);
     }
 }
 

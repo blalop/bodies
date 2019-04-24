@@ -1,75 +1,51 @@
 #include "body.hh"
 
 #include <iomanip>
-#include <utility>
 
 const Vector2D<double> ORIGIN = Vector2D<double>(0, 0);
 
-Body::Body() : pos(ORIGIN), vel(ORIGIN), force(ORIGIN), mass(0.0) {}
+Body::Body() : mass(0.0), pos(ORIGIN), vel(ORIGIN), force(ORIGIN) {}
 
-Body::Body(Vector2D<double> pos, Vector2D<double> vel, double mass)
-    : pos(pos), vel(vel), force(ORIGIN), mass(mass) {}
+Body::Body(double mass, Vector2D<double> pos, Vector2D<double> vel)
+    : mass(mass), pos(pos), vel(vel), force(ORIGIN) {}
+
+Body::Body(double mass, Vector2D<double> pos, Vector2D<double> vel,
+           Vector2D<double> force)
+    : mass(mass), pos(pos), vel(vel), force(force) {}
+
+Body Body::operator+(const Body body) const {
+    double mass = this->mass + body.mass;
+    Vector2D<double> pos = (this->pos + body.pos) / 2;
+    Vector2D<double> vel = this->vel + body.vel;
+    Vector2D<double> force = this->force + body.force;
+    return Body(mass, pos, vel, force);
+}
 
 Vector2D<int> Body::getPos() const {
     return Vector2D<int>(this->pos.x(), this->pos.y());
 }
 
-bool Body::in(Quadrant q) const { return q.contains(this->pos); }
+bool Body::in(Quadrant quadrant) const { return quadrant.contains(this->pos); }
 
-Body Body::operator+(const Body b) const {
-    Body n = Body();
-    n.pos = (this->pos + b.pos) / 2;
-    n.vel = this->vel + b.vel;
-    n.force = this->force + b.force;
-    n.mass = this->mass + b.mass;
-    return n;
-}
-
-double Body::getDistanceTo(const Body b) const {
-    Vector2D<double> d = b.pos - this->pos;
+double Body::getDistanceTo(const Body body) const {
+    Vector2D<double> d = body.pos - this->pos;
     double r = d.mod();
     return r;
 }
 
-void Body::computeForce(const Body b) {
-    Vector2D<double> d = b.pos - this->pos;
+void Body::computeForce(const Body body) {
+    Vector2D<double> d = body.pos - this->pos;
     double r = d.mod();
-    double f = (Body::G * this->mass * b.mass) / (r * r + E * E);
-    this->force = this->force + d * f / r;
+    double f =
+        (Body::G * this->mass * body.mass) / (r * r + Body::EPS * Body::EPS);
+    this->force += d * f / r;
 }
 
-void Body::computeVelocity() {
-    this->vel = this->vel + this->force * Body::DELTA / this->mass;
-}
-void Body::computePosition() {
-    this->pos = this->pos + (this->vel * Body::DELTA);
-}
+void Body::computeVelocity() { this->vel += this->force / this->mass; }
+void Body::computePosition() { this->pos += this->vel * Body::DELTA; }
 
-void Body::checkCollision(Body &b) {
-    if (this->mass > b.mass && this->pos == b.pos) {
-        this->mass += b.mass;
-        b.mass = 0;
-    }
-    // if (this->pos == b.pos) std::swap(this->vel, b.vel);
-}
-
-bool Body::operator==(const Body b) const {
-    return this->pos == b.pos && this->vel == b.vel && this->force == b.force &&
-           this->mass == b.mass;
-}
-
-std::ostream &operator<<(std::ostream &s, const Body b) {
-    using std::endl;
-    using std::fixed;
-    using std::setprecision;
-    using std::setw;
-    auto precision = s.precision();
-    auto width = s.width();
-    s << "Body:" << endl;
-    s << "\tmass: " << fixed << setw(width) << setprecision(precision) << b.mass
-      << endl;
-    s << "\tpos: " << b.pos << endl;
-    s << "\tvel: " << b.vel << endl;
-    s << "\tforce: " << b.force << endl;
+std::ostream &operator<<(std::ostream &s, const Body body) {
+    s << std::setprecision(2) << body.mass;
+    s << body.pos << body.vel << body.force << std::endl;
     return s;
 }
