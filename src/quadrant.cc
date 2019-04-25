@@ -2,47 +2,43 @@
 
 #include "vector2d.hh"
 
-Quadrant::Quadrant() {
-    this->dim = 0;
-    this->origin = Vector2D<double>(0, 0);
-}
+Quadrant::Quadrant() : center(ORIGIN), dim(0.0) {}
 
-Quadrant::Quadrant(Vector2D<double> origin, double dim) {
-    this->origin = origin;
-    this->dim = dim;
-}
+Quadrant::Quadrant(double dim) : center(ORIGIN), dim(dim) {}
+
+Quadrant::Quadrant(Vector2D<double> center, double dim)
+    : center(center), dim(dim) {}
+
 bool Quadrant::contains(Vector2D<double> point) const {
-    double x = point.x();
-    double y = point.y();
-    return x > this->origin.x() && y > this->origin.y() &&
-           x <= this->origin.x() + this->dim &&
-           y <= this->origin.y() + this->dim;
+    double radius = this->dim / 2;
+    return point.x > this->center.x - radius &&
+           point.y > this->center.y - radius &&
+           point.x <= this->center.x + radius &&
+           point.y <= this->center.y + radius;
 }
 
 double Quadrant::length() const { return this->dim; }
 
 Quadrant Quadrant::nw() const {
-    Quadrant q = Quadrant(this->origin, this->dim / 2);
-    return q;
+    double x = this->center.x - this->dim / 4;
+    double y = this->center.y - this->dim / 4;
+    return Quadrant(Vector2D<double>(x, y), this->dim / 2);
 }
 
 Quadrant Quadrant::ne() const {
-    Vector2D<double> origin =
-        Vector2D<double>(this->origin.x() + dim / 2, this->origin.y());
-    Quadrant q = Quadrant(origin, this->dim / 2);
-    return q;
+    double x = this->center.x + this->dim / 4;
+    double y = this->center.y - this->dim / 4;
+    return Quadrant(Vector2D<double>(x, y), this->dim / 2);
 }
 
 Quadrant Quadrant::sw() const {
-    Vector2D<double> origin =
-        Vector2D<double>(this->origin.x(), this->origin.y() + dim / 2);
-    Quadrant q = Quadrant(origin, this->dim / 2);
-    return q;
+    double x = this->center.x - this->dim / 4;
+    double y = this->center.y + this->dim / 4;
+    return Quadrant(Vector2D<double>(x, y), this->dim / 2);
 }
 
 Quadrant Quadrant::se() const {
-    Vector2D<double> origin = Vector2D<double>(this->origin.x() + dim / 2,
-                                               this->origin.y() + dim / 2);
-    Quadrant q = Quadrant(origin, this->dim / 2);
-    return q;
+    double x = this->center.x + this->dim / 4;
+    double y = this->center.y + this->dim / 4;
+    return Quadrant(Vector2D<double>(x, y), this->dim / 2);
 }

@@ -1,7 +1,5 @@
 #include "graphics.hh"
 
-#include "vector2d.hh"
-
 Graphics::Graphics(QWidget *parent, Map map, int iters)
     : QWidget(parent), map(map), iters(iters), itersCounter(0),
       timer(new QTimer) {
@@ -16,25 +14,21 @@ Graphics::Graphics(QWidget *parent, Map map, int iters)
 }
 
 void Graphics::step() {
-    this->image.fill(this->Color::BLACK);
-
     this->map.compute();
-    this->drawPoints();
+    this->image.fill(this->Color::BLACK);
+    for (Vector2D<double> point : map.getPositions()) {
+        if (Quadrant(ORIGIN, this->map.radius * 2).contains(point)) {
+            point = point.scale(Graphics::SIZE, -this->map.radius,
+                                +this->map.radius);
+            int x = static_cast<int>(std::floor(point.x));
+            int y = static_cast<int>(std::floor(point.y));
+            this->image.setPixel(x, y, this->Color::WHITE);
+        }
+    }
+    this->update();
 
     if (this->itersCounter++ > this->iters) {
         this->timer->stop();
-    }
-
-    this->update();
-}
-
-void Graphics::drawPoints() {
-    std::vector<Vector2D<int>> points = map.getPositions();
-    for (auto point : points) {
-        int x = point.x();
-        int y = point.y();
-
-        this->image.setPixel(x, y, this->Color::WHITE);
     }
 }
 

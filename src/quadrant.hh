@@ -7,7 +7,8 @@ class Quadrant {
 
   public:
     Quadrant();
-    Quadrant(Vector2D<double> origin, double dim);
+    Quadrant(double dim);
+    Quadrant(Vector2D<double> center, double dim);
     bool contains(Vector2D<double> point) const;
     double length() const;
     Quadrant nw() const;
@@ -16,8 +17,8 @@ class Quadrant {
     Quadrant se() const;
 
   private:
+    Vector2D<double> center;
     double dim;
-    Vector2D<double> origin;
 };
 
 #endif

@@ -2,8 +2,6 @@
 
 #include <iomanip>
 
-const Vector2D<double> ORIGIN = Vector2D<double>(0, 0);
-
 Body::Body() : mass(0.0), pos(ORIGIN), vel(ORIGIN), force(ORIGIN) {}
 
 Body::Body(double mass, Vector2D<double> pos, Vector2D<double> vel)
@@ -21,8 +19,8 @@ Body Body::operator+(const Body body) const {
     return Body(mass, pos, vel, force);
 }
 
-Vector2D<int> Body::getPos() const {
-    return Vector2D<int>(this->pos.x(), this->pos.y());
+Vector2D<double> Body::getPos() const {
+    return Vector2D<double>(this->pos.x, this->pos.y);
 }
 
 bool Body::in(Quadrant quadrant) const { return quadrant.contains(this->pos); }

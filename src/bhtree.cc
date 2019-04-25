@@ -80,8 +80,6 @@ void BHTree::placeBody(Body *body) {
         this->sw->insert(body);
     } else if (body->in(this->quadrant.se())) {
         this->se->insert(body);
-    } else {
-        std::exit(1);
     }
 }
 

@@ -8,77 +8,111 @@
 template <typename T> class Vector2D {
 
   public:
-    Vector2D() : px(0.0), py(0.0) {}
+    T x, y;
 
-    Vector2D(T x, T y) : px(x), py(y) {}
+    Vector2D() : x(0.0), y(0.0) {}
 
-    T x() const { return this->px; }
+    Vector2D(T t) : x(t), y(t) {}
 
-    T y() const { return this->py; }
+    Vector2D(T x, T y) : x(x), y(y) {}
+
+    Vector2D<T> operator+(const T f) const {
+        return Vector2D(this->x + f, this->y + f);
+    }
+
+    Vector2D<T> operator-(const T f) const {
+        return Vector2D(this->x - f, this->y - f);
+    }
+
+    Vector2D<T> operator*(const T f) const {
+        return Vector2D(this->x * f, this->y * f);
+    }
+
+    Vector2D<T> operator/(const T f) const {
+        return Vector2D(this->x / f, this->y / f);
+    }
 
     Vector2D<T> operator+(const Vector2D<T> v) const {
-        return Vector2D(this->px + v.px, this->py + v.py);
+        return Vector2D(this->x + v.x, this->y + v.y);
     }
 
     Vector2D<T> operator-(const Vector2D<T> v) const {
-        return Vector2D(this->px - v.px, this->py - v.py);
+        return Vector2D(this->x - v.x, this->y - v.y);
     }
 
-    Vector2D<T> operator*(T f) const {
-        return Vector2D(this->px * f, this->py * f);
+    Vector2D<T> operator*(const Vector2D<T> v) const {
+        return Vector2D(this->x * v.x, this->y * v.y);
     }
 
-    Vector2D<T> operator/(T f) const {
-        return Vector2D(this->px / f, this->py / f);
+    Vector2D<T> operator/(const Vector2D<T> v) const {
+        return Vector2D(this->x / v.x, this->y / v.y);
     }
 
     bool operator==(const Vector2D<T> v) const {
-        return this->px == v.px && this->py == v.py;
+        return this->x == v.x && this->y == v.y;
     }
 
     bool operator!=(const Vector2D<T> v) const { return !(this == v); }
 
     Vector2D<T> &operator=(const Vector2D<T> v) {
-        this->px = v.px;
-        this->py = v.py;
+        this->x = v.x;
+        this->y = v.y;
         return *this;
     }
 
     Vector2D<T> &operator+=(const Vector2D<T> v) {
-        this->px += v.px;
-        this->py += v.py;
+        this->x += v.x;
+        this->y += v.y;
         return *this;
     }
 
     Vector2D<T> &operator-=(const Vector2D<T> v) {
-        this->px -= v.px;
-        this->py -= v.py;
+        this->x -= v.x;
+        this->y -= v.y;
         return *this;
     }
 
     Vector2D<T> &operator*=(T f) {
-        this->px *= f;
-        this->py *= f;
+        this->x *= f;
+        this->y *= f;
         return *this;
     }
 
     Vector2D<T> &operator/=(T f) {
-        this->px /= f;
-        this->py /= f;
+        this->x /= f;
+        this->y /= f;
         return *this;
     }
 
     double mod() const {
-        return std::sqrt(this->px * this->px + this->py * this->py);
+        return std::sqrt(this->x * this->x + this->y * this->y);
+    }
+
+    Vector2D<T> round() const {
+        return Vector2D<T>(std::round(this->x), std::round(this->y));
+    }
+
+    Vector2D<T> floor() const {
+        return Vector2D<T>(std::floor(this->x), std::floor(this->y));
+    }
+
+    Vector2D<T> scale(T factor, T min, T max) const {
+        T x = factor * (this->x - min) / (max - min);
+        T y = factor * (this->y - min) / (max - min);
+        return Vector2D<T>(x, y);
     }
 
     friend std::ostream &operator<<(std::ostream &s, const Vector2D<T> v) {
-        s << std::setprecision(2) << "(" << v.px << ", " << v.py << ")";
+        s << std::setprecision(2) << "(" << v.x << ", " << v.y << ")";
         return s;
     }
 
-  private:
-    T px, py;
+    friend std::istream &operator>>(std::istream &s, Vector2D<T> &v) {
+        s >> v.x >> v.y;
+        return s;
+    }
 };
+
+const Vector2D<double> ORIGIN = Vector2D<double>(0.0, 0.0);
 
 #endif // VECTOR2D_HH

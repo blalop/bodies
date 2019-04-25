@@ -22,13 +22,12 @@ class Graphics : public QWidget {
     void paintEvent(QPaintEvent *);
 
   private:
-    constexpr static int SIZE = 800;
+    static constexpr int SIZE = 800;
     enum Color { BLACK, WHITE };
     Map map;
     int iters, itersCounter;
     QImage image;
     std::unique_ptr<QTimer> timer;
-    void drawPoints();
 
   private slots:
     void step();
