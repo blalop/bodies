@@ -1,7 +1,5 @@
 #include "quadrant.hh"
 
-#include "vector2d.hh"
-
 Quadrant::Quadrant() : center(ORIGIN), dim(0.0) {}
 
 Quadrant::Quadrant(double dim) : center(ORIGIN), dim(dim) {}

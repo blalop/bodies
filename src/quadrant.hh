@@ -4,7 +4,6 @@
 #include "vector2d.hh"
 
 class Quadrant {
-
   public:
     Quadrant();
     Quadrant(double dim);

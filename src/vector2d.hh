@@ -4,9 +4,9 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
+#include <typeinfo>
 
 template <typename T> class Vector2D {
-
   public:
     T x, y;
 
@@ -52,7 +52,7 @@ template <typename T> class Vector2D {
         return this->x == v.x && this->y == v.y;
     }
 
-    bool operator!=(const Vector2D<T> v) const { return !(this == v); }
+    bool operator!=(const Vector2D<T> v) const { return !(*this == v); }
 
     Vector2D<T> &operator=(const Vector2D<T> v) {
         this->x = v.x;
@@ -103,7 +103,7 @@ template <typename T> class Vector2D {
     }
 
     friend std::ostream &operator<<(std::ostream &s, const Vector2D<T> v) {
-        s << std::setprecision(2) << "(" << v.x << ", " << v.y << ")";
+        s << std::setprecision(5) << "(" << v.x << ", " << v.y << ")";
         return s;
     }
 
@@ -113,6 +113,6 @@ template <typename T> class Vector2D {
     }
 };
 
-const Vector2D<double> ORIGIN = Vector2D<double>(0.0, 0.0);
+const Vector2D<double> ORIGIN(0.0, 0.0);
 
 #endif // VECTOR2D_HH

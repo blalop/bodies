@@ -5,22 +5,20 @@
 #include "quadrant.hh"
 
 class BHTree {
-
   public:
     BHTree(Quadrant quadrant);
-    BHTree(const BHTree &) = default;
     ~BHTree();
-    void insert(Body *body);
-    void updateForce(Body *body);
-    friend std::ostream &operator<<(std::ostream &s, const BHTree bhtree);
+    void insert(const Body body);
+    void updateForce(Body &body);
 
   private:
-    Body *body;
+    Body body;
     Quadrant quadrant;
     BHTree *nw, *ne, *sw, *se;
-    constexpr static double THETA = 0.5;
     bool isInternal() const;
-    void placeBody(Body *body);
+    void placeBody(Body body);
+
+    constexpr static double THETA = 0.5;
 };
 
 #endif // QUADTREE_HH

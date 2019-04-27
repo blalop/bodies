@@ -3,53 +3,51 @@
 #include "bhtree.hh"
 #include "vector2d.hh"
 
-Map::Map() : n(0), radius(0.0) {}
+Map::Map(double deltatime) : deltatime(deltatime) {}
 
-std::vector<Vector2D<double>> Map::getPositions() const {
-    std::vector<Vector2D<double>> points(static_cast<unsigned int>(this->n));
-    for (Body body : this->map) {
-        Vector2D<double> p = body.getPos();
-        points.push_back(p);
-    }
-    return points;
-}
+std::vector<Body> Map::getBodies() const { return this->bodies; }
+
+Quadrant Map::getQuadrant() const { return this->quadrant; }
 
 void Map::compute() {
-    Quadrant quadrant = Quadrant(ORIGIN, this->radius * 2);
-    BHTree *bhtree = new BHTree(quadrant);
-    for (Body &body : this->map) {
-        if (body.in(quadrant)) {
-            bhtree->insert(&body);
+    BHTree bhtree(this->quadrant);
+    for (Body body : this->bodies) {
+        if (body.in(this->quadrant)) {
+            bhtree.insert(body);
         }
     }
 
-    for (Body &body : this->map) {
-        bhtree->updateForce(&body);
+    for (Body &body : this->bodies) {
+        body.resetForce();
+        bhtree.updateForce(body);
         body.computeVelocity();
-        body.computePosition();
+        body.computePosition(this->deltatime);
     }
 }
 
 std::istream &operator>>(std::istream &s, Map &map) {
-    s >> map.n;
-    s >> map.radius;
-    map.map.reserve(static_cast<unsigned int>(map.n));
+    int n;
+    double radius;
+    s >> n;
+    s >> radius;
+    map.bodies.reserve(static_cast<unsigned int>(n));
+    map.quadrant = Quadrant(radius * 2);
 
-    for (auto i = 0; i < map.n; i++) {
+    for (auto i = 0; i < n; i++) {
         double m, x, y, vx, vy;
         s >> m >> x >> y >> vx >> vy;
         Vector2D<double> pos = Vector2D<double>(x, y);
         Vector2D<double> vel = Vector2D<double>(vx, vy);
-        map.map.push_back(Body(m, pos, vel));
+        map.bodies.push_back(Body(m, pos, vel));
     }
     return s;
 }
 
 std::ostream &operator<<(std::ostream &s, const Map map) {
-    s << map.n << std::endl;
-    s << map.radius << std::endl;
-    for (Body body : map.map) {
-        s << body;
+    s << "Map: ";
+    s << map.bodies.size() << " " << map.quadrant.length() << std::endl;
+    for (Body body : map.bodies) {
+        s << body << std::endl;
     }
     return s;
 }

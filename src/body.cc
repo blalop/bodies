@@ -7,18 +7,6 @@ Body::Body() : mass(0.0), pos(ORIGIN), vel(ORIGIN), force(ORIGIN) {}
 Body::Body(double mass, Vector2D<double> pos, Vector2D<double> vel)
     : mass(mass), pos(pos), vel(vel), force(ORIGIN) {}
 
-Body::Body(double mass, Vector2D<double> pos, Vector2D<double> vel,
-           Vector2D<double> force)
-    : mass(mass), pos(pos), vel(vel), force(force) {}
-
-Body Body::operator+(const Body body) const {
-    double mass = this->mass + body.mass;
-    Vector2D<double> pos = (this->pos + body.pos) / 2;
-    Vector2D<double> vel = this->vel + body.vel;
-    Vector2D<double> force = this->force + body.force;
-    return Body(mass, pos, vel, force);
-}
-
 Vector2D<double> Body::getPos() const {
     return Vector2D<double>(this->pos.x, this->pos.y);
 }
@@ -31,6 +19,8 @@ double Body::getDistanceTo(const Body body) const {
     return r;
 }
 
+void Body::resetForce() { this->force = ORIGIN; }
+
 void Body::computeForce(const Body body) {
     Vector2D<double> d = body.pos - this->pos;
     double r = d.mod();
@@ -40,10 +30,27 @@ void Body::computeForce(const Body body) {
 }
 
 void Body::computeVelocity() { this->vel += this->force / this->mass; }
-void Body::computePosition() { this->pos += this->vel * Body::DELTA; }
+
+void Body::computePosition(const double deltatime) {
+    this->pos += this->vel * deltatime;
+}
+
+Body Body::operator+(const Body body) const {
+    double mass = this->mass + body.mass;
+    Vector2D<double> pos =
+        (this->pos * this->mass + body.pos * body.mass) / mass;
+    Vector2D<double> vel =
+        (this->vel * this->mass + body.vel * body.mass) / mass;
+    return Body(mass, pos, vel);
+}
+
+bool Body::operator==(const Body body) const {
+    return this->mass == body.mass && this->pos == body.pos &&
+           this->vel == body.vel;
+}
 
 std::ostream &operator<<(std::ostream &s, const Body body) {
-    s << std::setprecision(2) << body.mass;
-    s << body.pos << body.vel << body.force << std::endl;
+    s << "Body: " << std::setprecision(5) << body.mass << " ";
+    s << body.pos << " " << body.vel << " " << body.force;
     return s;
 }

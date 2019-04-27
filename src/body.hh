@@ -7,27 +7,25 @@
 #include <iostream>
 
 class Body {
-
   public:
     Body();
     Body(double mass, Vector2D<double> pos, Vector2D<double> vel);
-    Body(double mass, Vector2D<double> pos, Vector2D<double> vel,
-         Vector2D<double> force);
-    Body operator+(const Body b) const;
     Vector2D<double> getPos() const;
     bool in(Quadrant q) const;
     double getDistanceTo(const Body b) const;
+    void resetForce();
     void computeForce(const Body b);
     void computeVelocity();
-    void computePosition();
+    void computePosition(const double deltatime);
+    Body operator+(const Body body) const;
+    bool operator==(const Body body) const;
     friend std::ostream &operator<<(std::ostream &s, const Body b);
 
   private:
     double mass;
     Vector2D<double> pos, vel, force;
-    static constexpr double G = 6.6738e-11;
-    static constexpr double EPS = 1;       // softening parameter
-    static constexpr double DELTA = 0.001; // deltatime
+    static constexpr double G = 6.67e-11;
+    static constexpr double EPS = 3e4; // softening parameter
 };
 
 #endif // BODY_HH
