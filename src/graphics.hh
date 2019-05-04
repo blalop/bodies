@@ -5,6 +5,7 @@
 
 #include <QImage>
 #include <QPainter>
+#include <QString>
 #include <QTimer>
 #include <QWidget>
 
@@ -12,8 +13,9 @@ class Graphics : public QWidget {
     Q_OBJECT
 
   public:
-    Graphics(QWidget *parent, Map map, int iters);
+    Graphics(QWidget *parent, Map map, int iters, bool bigger=true);
     ~Graphics();
+    void saveImage(QString filename) const;
 
   protected:
     void paintEvent(QPaintEvent *);
@@ -23,6 +25,7 @@ class Graphics : public QWidget {
     int iters, counter;
     QImage image;
     QTimer *timer;
+    bool bigger;
 
     static constexpr int SIZE = 800;
     enum Color { BLACK, WHITE };
