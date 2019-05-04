@@ -2,18 +2,21 @@
 
 A N-Body simulation.
 
-This repo contains my Bachelor's thesis. The aim is to implement a Barnes-Hut simulation and parallelize it.
+This repo contains my Bachelor's thesis. It is a n-body simulation.
+
+It has three configurations:
+* brute: brute force method
+* bhtree: tree based method
+* parallel: tree based method (parallel)
 
 ## Dependencies
 
-Qt 5. I'm working with 5.12.2, but it should work with 5.x. C++11 is needed.
+Qt 5. I'm working with 5.9.5, but it should work with 5.x. C++11 is needed.
 
 ## Instructions
 
 ```
-mkdir build
-cd build
-qmake ..
+qmake -config [brute, bhtree, parallel]
 make
-./nbody < inputfile [iterations]
+bin/nbody_[brute, bhtree, parallel] < inputfile <iterations> <deltatime>
 ```

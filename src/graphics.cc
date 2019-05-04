@@ -20,7 +20,7 @@ Graphics::~Graphics() { delete this->timer; }
 
 void Graphics::step() {
     if (this->counter++ >= this->iters) {
-        this->timer->stop();
+        this->close();
     }
 
     this->map.compute();

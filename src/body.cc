@@ -29,10 +29,12 @@ void Body::computeForce(const Body body) {
     this->force += d * f / r;
 }
 
-void Body::computeVelocity() { this->vel += this->force / this->mass; }
+void Body::computeVelocity(double deltatime) { 
+    Vector2D<double> aceleration = this->force / this->mass;
+    this->vel = this->vel + aceleration * deltatime; }
 
-void Body::computePosition(const double deltatime) {
-    this->pos += this->vel * deltatime;
+void Body::computePosition(double deltatime) {
+    this->pos = this->pos + this->vel * deltatime;
 }
 
 Body Body::operator+(const Body body) const {

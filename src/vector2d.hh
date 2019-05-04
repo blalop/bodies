@@ -4,7 +4,6 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
-#include <typeinfo>
 
 template <typename T> class Vector2D {
   public:

@@ -15,8 +15,8 @@ class Body {
     double getDistanceTo(const Body b) const;
     void resetForce();
     void computeForce(const Body b);
-    void computeVelocity();
-    void computePosition(const double deltatime);
+    void computeVelocity(double deltatime);
+    void computePosition(double deltatime);
     Body operator+(const Body body) const;
     bool operator==(const Body body) const;
     friend std::ostream &operator<<(std::ostream &s, const Body b);

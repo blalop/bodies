@@ -1,6 +1,9 @@
 #include "map.hh"
 
+#if defined BHTREE || defined PARALLEL
 #include "bhtree.hh"
+#endif
+
 #include "vector2d.hh"
 
 Map::Map(double deltatime) : deltatime(deltatime) {}
@@ -9,6 +12,23 @@ std::vector<Body> Map::getBodies() const { return this->bodies; }
 
 Quadrant Map::getQuadrant() const { return this->quadrant; }
 
+
+#if BRUTE
+void Map::compute() {
+    for (unsigned i = 0; i < this->bodies.size(); i++) {
+        this->bodies[i].resetForce();
+        for (unsigned j = 0; j < this->bodies.size(); j++) {
+            if (i != j) {
+                this->bodies[i].computeForce(this->bodies[j]);
+            }
+        }
+    }
+    for (Body &body : this->bodies) {
+        body.computeVelocity(this->deltatime);
+        body.computePosition(this->deltatime);
+    }
+}
+#elif BHTREE
 void Map::compute() {
     BHTree bhtree(this->quadrant);
     for (Body body : this->bodies) {
@@ -20,10 +40,17 @@ void Map::compute() {
     for (Body &body : this->bodies) {
         body.resetForce();
         bhtree.updateForce(body);
-        body.computeVelocity();
+        body.computeVelocity(this->deltatime);
         body.computePosition(this->deltatime);
     }
+
 }
+#elif PARALLEL
+void Map::compute() {
+}
+#else
+#error "Define at least one of [BRUTE, BHTREE, PARALLEL]"
+#endif
 
 std::istream &operator>>(std::istream &s, Map &map) {
     int n;
