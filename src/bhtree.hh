@@ -4,10 +4,12 @@
 #include "body.hh"
 #include "quadrant.hh"
 
+#include <memory>
+
 class BHTree {
   public:
     BHTree(Quadrant quadrant);
-    BHTree(Quadrant quadrant, BHTree *nw, BHTree *ne, BHTree *sw, BHTree *se);
+    BHTree(Quadrant quadrant, std::shared_ptr<BHTree> nw, std::shared_ptr<BHTree> ne, std::shared_ptr<BHTree> sw, std::shared_ptr<BHTree> se);
     ~BHTree();
     void insert(const Body body);
     void updateForce(Body &body);
@@ -16,7 +18,7 @@ class BHTree {
   private:
     Body body;
     Quadrant quadrant;
-    BHTree *nw, *ne, *sw, *se;
+    std::shared_ptr<BHTree> nw, ne, sw, se;
     bool isInternal() const;
     void placeBody(Body body);
 

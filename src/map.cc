@@ -5,6 +5,7 @@
 #endif
 
 #if defined PARALLEL
+#include <memory>
 #include <thread>
 #endif
 
@@ -51,7 +52,7 @@ void Map::compute() {
 
 }
 #elif PARALLEL
-void buildTree(BHTree *bhtree, std::vector<Body> bodies) {
+void buildTree(std::shared_ptr<BHTree> bhtree, std::vector<Body> bodies) {
     for (Body body : bodies) {
         if (body.in(bhtree->getQuadrant())) {
             bhtree->insert(body);
@@ -59,12 +60,15 @@ void buildTree(BHTree *bhtree, std::vector<Body> bodies) {
     }
 }
 
+void computeTree(std::shared_ptr<BHTree> bhtree, std::vector<Body> *bodies, double deltatime) {
+    for (Body &body : *bodies) {
+        body.resetForce();
+        bhtree->updateForce(body);
+        body.computeVelocity(deltatime);
+        body.computePosition(deltatime);
+    }
+}
 void Map::compute() {
-    BHTree *nwTree = new BHTree(this->quadrant.nw());
-    BHTree *neTree = new BHTree(this->quadrant.ne());
-    BHTree *swTree = new BHTree(this->quadrant.sw());
-    BHTree *seTree = new BHTree(this->quadrant.se());
-
     std::vector<Body> nwBodies, neBodies, swBodies, seBodies;
 
     for (Body body : this->bodies) {
@@ -76,27 +80,41 @@ void Map::compute() {
             swBodies.push_back(body);
         } else if (body.in(this->quadrant.se())) {
             seBodies.push_back(body);
-        } 
+        }
     }
 
-    std::thread nwThread(buildTree, nwTree, nwBodies);
-    std::thread neThread(buildTree, neTree, neBodies);
-    std::thread swThread(buildTree, swTree, swBodies);
-    std::thread seThread(buildTree, seTree, seBodies);
+    std::shared_ptr<BHTree> nwTree(new BHTree(this->quadrant.nw()));
+    std::shared_ptr<BHTree> neTree(new BHTree(this->quadrant.ne()));
+    std::shared_ptr<BHTree> swTree(new BHTree(this->quadrant.sw()));
+    std::shared_ptr<BHTree> seTree(new BHTree(this->quadrant.se()));
 
-    nwThread.join();
-    neThread.join();
-    swThread.join();
-    seThread.join();
+    std::thread nwThreadBuild(buildTree, nwTree, nwBodies);
+    std::thread neThreadBuild(buildTree, neTree, neBodies);
+    std::thread swThreadBuild(buildTree, swTree, swBodies);
+    std::thread seThreadBuild(buildTree, seTree, seBodies);
 
-    BHTree bhtree(this->quadrant, nwTree, neTree, swTree, seTree);
+    nwThreadBuild.join();
+    neThreadBuild.join();
+    swThreadBuild.join();
+    seThreadBuild.join();
 
-    for (Body &body : this->bodies) {
-        body.resetForce();
-        bhtree.updateForce(body);
-        body.computeVelocity(this->deltatime);
-        body.computePosition(this->deltatime);
-    }
+    std::shared_ptr<BHTree> bhtree(new BHTree(this->quadrant, nwTree, neTree, swTree, seTree));
+
+    std::thread nwThreadCompute(computeTree, bhtree, &nwBodies, this->deltatime);
+    std::thread neThreadCompute(computeTree, bhtree, &neBodies, this->deltatime);
+    std::thread swThreadCompute(computeTree, bhtree, &swBodies, this->deltatime);
+    std::thread seThreadCompute(computeTree, bhtree, &seBodies, this->deltatime);
+
+    nwThreadCompute.join();
+    neThreadCompute.join();
+    swThreadCompute.join();
+    seThreadCompute.join();
+
+    this->bodies.clear();
+    this->bodies.insert(this->bodies.end(), nwBodies.begin(), nwBodies.end());
+    this->bodies.insert(this->bodies.end(), neBodies.begin(), neBodies.end());
+    this->bodies.insert(this->bodies.end(), swBodies.begin(), swBodies.end());
+    this->bodies.insert(this->bodies.end(), seBodies.begin(), seBodies.end());
 }
 #else
 #error "Define at least one of [BRUTE, BHTREE, PARALLEL]"
