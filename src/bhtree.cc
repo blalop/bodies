@@ -6,6 +6,14 @@ BHTree::BHTree(Quadrant quadrant) : body(EMPTY_BODY), quadrant(quadrant) {
     this->nw = this->ne = this->sw = this->se = nullptr;
 }
 
+BHTree::BHTree(Quadrant quadrant, BHTree *nw, BHTree *ne, BHTree *sw, BHTree *se) : quadrant(quadrant) {
+    this->nw = nw;
+    this->ne = ne;
+    this->sw = sw;
+    this->se = se;
+    this->body = this->nw->body + this->ne->body + this->sw->body + this->se->body;
+}
+
 BHTree::~BHTree() {
     delete this->nw;
     delete this->ne;
@@ -48,6 +56,10 @@ void BHTree::updateForce(Body &body) {
     } else {
         body.computeForce(this->body);
     }
+}
+
+Quadrant BHTree::getQuadrant() const {
+    return this->quadrant;
 }
 
 bool BHTree::isInternal() const {

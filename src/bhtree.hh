@@ -7,9 +7,11 @@
 class BHTree {
   public:
     BHTree(Quadrant quadrant);
+    BHTree(Quadrant quadrant, BHTree *nw, BHTree *ne, BHTree *sw, BHTree *se);
     ~BHTree();
     void insert(const Body body);
     void updateForce(Body &body);
+    Quadrant getQuadrant() const;
 
   private:
     Body body;

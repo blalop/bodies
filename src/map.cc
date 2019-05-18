@@ -4,6 +4,10 @@
 #include "bhtree.hh"
 #endif
 
+#if defined PARALLEL
+#include <thread>
+#endif
+
 #include "vector2d.hh"
 
 Map::Map(double deltatime) : deltatime(deltatime) {}
@@ -31,6 +35,7 @@ void Map::compute() {
 #elif BHTREE
 void Map::compute() {
     BHTree bhtree(this->quadrant);
+
     for (Body body : this->bodies) {
         if (body.in(this->quadrant)) {
             bhtree.insert(body);
@@ -46,7 +51,52 @@ void Map::compute() {
 
 }
 #elif PARALLEL
+void buildTree(BHTree *bhtree, std::vector<Body> bodies) {
+    for (Body body : bodies) {
+        if (body.in(bhtree->getQuadrant())) {
+            bhtree->insert(body);
+        }
+    }
+}
+
 void Map::compute() {
+    BHTree *nwTree = new BHTree(this->quadrant.nw());
+    BHTree *neTree = new BHTree(this->quadrant.ne());
+    BHTree *swTree = new BHTree(this->quadrant.sw());
+    BHTree *seTree = new BHTree(this->quadrant.se());
+
+    std::vector<Body> nwBodies, neBodies, swBodies, seBodies;
+
+    for (Body body : this->bodies) {
+        if (body.in(this->quadrant.nw())) {
+            nwBodies.push_back(body);
+        } else if (body.in(this->quadrant.ne())) {
+            neBodies.push_back(body);
+        } else if (body.in(this->quadrant.sw())) {
+            swBodies.push_back(body);
+        } else if (body.in(this->quadrant.se())) {
+            seBodies.push_back(body);
+        } 
+    }
+
+    std::thread nwThread(buildTree, nwTree, nwBodies);
+    std::thread neThread(buildTree, neTree, neBodies);
+    std::thread swThread(buildTree, swTree, swBodies);
+    std::thread seThread(buildTree, seTree, seBodies);
+
+    nwThread.join();
+    neThread.join();
+    swThread.join();
+    seThread.join();
+
+    BHTree bhtree(this->quadrant, nwTree, neTree, swTree, seTree);
+
+    for (Body &body : this->bodies) {
+        body.resetForce();
+        bhtree.updateForce(body);
+        body.computeVelocity(this->deltatime);
+        body.computePosition(this->deltatime);
+    }
 }
 #else
 #error "Define at least one of [BRUTE, BHTREE, PARALLEL]"
