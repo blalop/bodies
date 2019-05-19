@@ -52,34 +52,34 @@ void Map::compute() {
 
 }
 #elif PARALLEL
-void buildTree(std::shared_ptr<BHTree> bhtree, std::vector<Body> bodies) {
-    for (Body body : bodies) {
-        if (body.in(bhtree->getQuadrant())) {
-            bhtree->insert(body);
+void buildTree(std::shared_ptr<BHTree> bhtree, std::vector<Body*> bodies) {
+    for (Body *body : bodies) {
+        if (body->in(bhtree->getQuadrant())) {
+            bhtree->insert(*body);
         }
     }
 }
 
-void computeTree(std::shared_ptr<BHTree> bhtree, std::vector<Body> *bodies, double deltatime) {
-    for (Body &body : *bodies) {
-        body.resetForce();
-        bhtree->updateForce(body);
-        body.computeVelocity(deltatime);
-        body.computePosition(deltatime);
+void computeTree(std::shared_ptr<BHTree> bhtree, std::vector<Body*> *bodies, double deltatime) {
+    for (Body *body : *bodies) {
+        body->resetForce();
+        bhtree->updateForce(*body);
+        body->computeVelocity(deltatime);
+        body->computePosition(deltatime);
     }
 }
 void Map::compute() {
-    std::vector<Body> nwBodies, neBodies, swBodies, seBodies;
+    std::vector<Body*> nwBodies, neBodies, swBodies, seBodies;
 
-    for (Body body : this->bodies) {
+    for (Body &body : this->bodies) {
         if (body.in(this->quadrant.nw())) {
-            nwBodies.push_back(body);
+            nwBodies.push_back(&body);
         } else if (body.in(this->quadrant.ne())) {
-            neBodies.push_back(body);
+            neBodies.push_back(&body);
         } else if (body.in(this->quadrant.sw())) {
-            swBodies.push_back(body);
+            swBodies.push_back(&body);
         } else if (body.in(this->quadrant.se())) {
-            seBodies.push_back(body);
+            seBodies.push_back(&body);
         }
     }
 
@@ -109,12 +109,6 @@ void Map::compute() {
     neThreadCompute.join();
     swThreadCompute.join();
     seThreadCompute.join();
-
-    this->bodies.clear();
-    this->bodies.insert(this->bodies.end(), nwBodies.begin(), nwBodies.end());
-    this->bodies.insert(this->bodies.end(), neBodies.begin(), neBodies.end());
-    this->bodies.insert(this->bodies.end(), swBodies.begin(), swBodies.end());
-    this->bodies.insert(this->bodies.end(), seBodies.begin(), seBodies.end());
 }
 #else
 #error "Define at least one of [BRUTE, BHTREE, PARALLEL]"
