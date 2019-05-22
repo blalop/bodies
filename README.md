@@ -11,12 +11,12 @@ It has three configurations:
 
 ## Dependencies
 
-Qt 5. I'm working with 5.9.5, but it should work with 5.x. C++11 is needed.
+Qt 5. C++11 is needed.
 
 ## Instructions
 
 ```
-qmake -config [brute, bhtree, parallel]
+qmake
 make
-bin/nbody_[brute, bhtree, parallel] < inputfile <iterations> <deltatime>
+bin/nbody model [iterations] [trace]
 ```

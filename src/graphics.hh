@@ -23,7 +23,7 @@ class Graphics : public QWidget {
 
   private:
     Map *map;
-    int iters, counter, trace;
+    int iters, i, trace;
     QImage image;
     std::unique_ptr<QTimer> timer;
     void draw();

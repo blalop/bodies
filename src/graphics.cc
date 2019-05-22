@@ -4,7 +4,7 @@
 #include "vector2d.hh"
 
 Graphics::Graphics(QWidget *parent, Map *map, int iters, int trace)
-    : QWidget(parent), map(map), iters(iters), counter(0), trace(trace), timer(new QTimer(this)) {
+    : QWidget(parent), map(map), iters(iters), i(0), trace(trace), timer(new QTimer(this)) {
     this->resize(Graphics::SIZE, Graphics::SIZE);
 
     this->image =
@@ -17,6 +17,10 @@ Graphics::Graphics(QWidget *parent, Map *map, int iters, int trace)
 
     QObject::connect(this->timer.get(), SIGNAL(timeout()), this, SLOT(step()));
     this->timer->start(0);
+}
+
+void Graphics::saveImage(QString filename) const {
+    this->image.save(filename, "PNG");
 }
 
 void Graphics::draw() {
@@ -42,24 +46,20 @@ void Graphics::draw() {
 }
 
 void Graphics::step() {
-    if (this->counter >= this->iters) {
-        this->close();
-    }
-
     this->map->compute();
 
-    if (this->counter % this->trace == 0) {
+    if (this->i % this->trace == 0) {
         this->draw();
     }
 
-    this->counter++;
+    this->i++;
+
+    if (this->i == this->iters) {
+        this->close();
+    }
 }
 
 void Graphics::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.drawImage(0, 0, this->image);
-}
-
-void Graphics::saveImage(QString filename) const {
-    this->image.save(filename, "PNG");
 }
