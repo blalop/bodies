@@ -9,23 +9,24 @@
 #include <QTimer>
 #include <QWidget>
 
+#include <memory>
+
 class Graphics : public QWidget {
     Q_OBJECT
 
   public:
-    Graphics(QWidget *parent, Map map, int iters, bool bigger=true);
-    ~Graphics();
+    Graphics(QWidget *parent, Map *map, int iters, int trace);
     void saveImage(QString filename) const;
 
   protected:
     void paintEvent(QPaintEvent *);
 
   private:
-    Map map;
-    int iters, counter;
+    Map *map;
+    int iters, counter, trace;
     QImage image;
-    QTimer *timer;
-    bool bigger;
+    std::unique_ptr<QTimer> timer;
+    void draw();
 
     static constexpr int SIZE = 800;
     enum Color { BLACK, WHITE };

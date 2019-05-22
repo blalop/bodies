@@ -6,17 +6,19 @@ BHTree::BHTree(Quadrant quadrant) : body(EMPTY_BODY), quadrant(quadrant) {
     this->nw = this->ne = this->sw = this->se = nullptr;
 }
 
-BHTree::BHTree(Quadrant quadrant, std::shared_ptr<BHTree> nw, std::shared_ptr<BHTree> ne, std::shared_ptr<BHTree> sw, std::shared_ptr<BHTree> se)
-: quadrant(quadrant) {
+BHTree::BHTree(Quadrant quadrant, std::shared_ptr<BHTree> nw,
+               std::shared_ptr<BHTree> ne, std::shared_ptr<BHTree> sw,
+               std::shared_ptr<BHTree> se)
+    : quadrant(quadrant) {
     this->nw = nw;
     this->ne = ne;
     this->sw = sw;
     this->se = se;
-    this->body = this->nw->body + this->ne->body + this->sw->body + this->se->body;
+    this->body =
+        this->nw->body + this->ne->body + this->sw->body + this->se->body;
 }
 
-BHTree::~BHTree() {
-}
+BHTree::~BHTree() {}
 
 void BHTree::insert(const Body body) {
     if (this->body == EMPTY_BODY) {
@@ -55,9 +57,7 @@ void BHTree::updateForce(Body &body) {
     }
 }
 
-Quadrant BHTree::getQuadrant() const {
-    return this->quadrant;
-}
+Quadrant BHTree::getQuadrant() const { return this->quadrant; }
 
 bool BHTree::isInternal() const {
     return this->nw || this->ne || this->sw || this->se;

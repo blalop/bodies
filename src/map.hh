@@ -5,6 +5,7 @@
 #include "quadrant.hh"
 
 #include <iostream>
+#include <memory>
 #include <vector>
 
 class Map {
@@ -12,14 +13,32 @@ class Map {
     Map(double deltatime);
     std::vector<Body> getBodies() const;
     Quadrant getQuadrant() const;
-    void compute();
-    friend std::istream &operator>>(std::istream &s, Map &map);
-    friend std::ostream &operator<<(std::ostream &s, const Map map);
+    virtual void compute() = 0;
+    friend std::istream &operator>>(std::istream &s, Map *map);
+    friend std::ostream &operator<<(std::ostream &s, const Map *map);
 
-  private:
+  protected:
     double deltatime;
     std::vector<Body> bodies;
     Quadrant quadrant;
+};
+
+class MapBrute : public Map {
+  public:
+    MapBrute(double deltatime);
+    void compute();
+};
+
+class MapBHTree : public Map {
+  public:
+    MapBHTree(double deltatime);
+    void compute();
+};
+
+class MapParallel : public Map {
+  public:
+    MapParallel(double deltatime);
+    void compute();
 };
 
 #endif // MAP_HH
