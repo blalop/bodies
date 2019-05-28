@@ -15,14 +15,14 @@ class Graphics : public QWidget {
     Q_OBJECT
 
   public:
-    Graphics(QWidget *parent, Map *map, int iters, int trace);
+    Graphics(QWidget *parent, std::shared_ptr<Map> map, int iters, int trace);
     void saveImage(QString filename) const;
 
   protected:
     void paintEvent(QPaintEvent *);
 
   private:
-    Map *map;
+    std::shared_ptr<Map> map;
     int iters, i, trace;
     QImage image;
     std::unique_ptr<QTimer> timer;

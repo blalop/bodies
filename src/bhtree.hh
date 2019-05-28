@@ -9,18 +9,16 @@
 class BHTree {
   public:
     BHTree(Quadrant quadrant);
-    BHTree(Quadrant quadrant, std::shared_ptr<BHTree> nw,
-           std::shared_ptr<BHTree> ne, std::shared_ptr<BHTree> sw,
-           std::shared_ptr<BHTree> se);
     ~BHTree();
+    void append(BHTree *nw, BHTree *ne, BHTree *sw, BHTree *se);
     void insert(const Body body);
-    void updateForce(Body &body);
+    void updateForce(Body &body) const;
     Quadrant getQuadrant() const;
 
-  private:
+  //private:
     Body body;
     Quadrant quadrant;
-    std::shared_ptr<BHTree> nw, ne, sw, se;
+    BHTree *nw, *ne, *sw, *se;
     bool isInternal() const;
     void placeBody(Body body);
 

@@ -25,29 +25,36 @@ int main(int argc, char **argv) {
     const int iters = (argc == 3) ? std::atoi(argv[2]) : DEFAULT_I;
     const int trace = (argc == 4) ? std::atoi(argv[3]) : DEFAULT_TRACE;
 
-    Map *map;
+    std::shared_ptr<Map> map;
     switch (model) {
     case BRUTE:
-        map = new MapBrute(DEFAULT_DT);
+        map = std::shared_ptr<Map>(new MapBrute(DEFAULT_DT));
         break;
     case BHTREE:
-        map = new MapBHTree(DEFAULT_DT);
+        map = std::shared_ptr<Map>(new MapBHTree(DEFAULT_DT));
         break;
     case PARALLEL:
-        map = new MapParallel(DEFAULT_DT);
+        map = std::shared_ptr<Map>(new MapParallel(DEFAULT_DT));
         break;
     default:
         return 1;
     }
     std::cin >> map;
 
-    QApplication app(argc, argv);
-    Graphics graphics(nullptr, map, iters, trace);
+    //QApplication app(argc, argv);
+    //Graphics graphics(nullptr, map, iters, trace);
 
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
-    int exec = app.exec();
+    //int exec = app.exec();
+    for (int i = 0; i < iters; i++) {
+        map->compute();
+        if (i % trace == 0) {
+            std::cout << i << std::endl;
+            std::cout << map << std::endl;
+        }
+    }
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
     std::cout << time_span.count() << " seconds" << std::endl;
-    return exec;
+    return 0;
 }

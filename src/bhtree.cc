@@ -6,18 +6,6 @@ BHTree::BHTree(Quadrant quadrant) : body(EMPTY_BODY), quadrant(quadrant) {
     this->nw = this->ne = this->sw = this->se = nullptr;
 }
 
-BHTree::BHTree(Quadrant quadrant, std::shared_ptr<BHTree> nw,
-               std::shared_ptr<BHTree> ne, std::shared_ptr<BHTree> sw,
-               std::shared_ptr<BHTree> se)
-    : quadrant(quadrant) {
-    this->nw = nw;
-    this->ne = ne;
-    this->sw = sw;
-    this->se = se;
-    this->body =
-        this->nw->body + this->ne->body + this->sw->body + this->se->body;
-}
-
 BHTree::~BHTree() {}
 
 void BHTree::insert(const Body body) {
@@ -27,17 +15,26 @@ void BHTree::insert(const Body body) {
         this->body = this->body + body;
         this->placeBody(body);
     } else {
-        this->nw = std::shared_ptr<BHTree>(new BHTree(this->quadrant.nw()));
-        this->ne = std::shared_ptr<BHTree>(new BHTree(this->quadrant.ne()));
-        this->sw = std::shared_ptr<BHTree>(new BHTree(this->quadrant.sw()));
-        this->se = std::shared_ptr<BHTree>(new BHTree(this->quadrant.se()));
+        this->nw = new BHTree(this->quadrant.nw());
+        this->ne = new BHTree(this->quadrant.ne());
+        this->sw = new BHTree(this->quadrant.sw());
+        this->se = new BHTree(this->quadrant.se());
         this->placeBody(this->body);
         this->placeBody(body);
         this->body = this->body + body;
     }
 }
 
-void BHTree::updateForce(Body &body) {
+void BHTree::append(BHTree *nw, BHTree *ne, BHTree *sw, BHTree *se) {
+    this->nw = nw;
+    this->ne = ne;
+    this->sw = sw;
+    this->se = se;
+    this->body =
+        this->nw->body + this->ne->body + this->sw->body + this->se->body;
+}
+
+void BHTree::updateForce(Body &body) const {
     if (this->body == EMPTY_BODY || this->body == body) {
         return;
     }

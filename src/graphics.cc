@@ -3,8 +3,10 @@
 #include "body.hh"
 #include "vector2d.hh"
 
-Graphics::Graphics(QWidget *parent, Map *map, int iters, int trace)
-    : QWidget(parent), map(map), iters(iters), i(0), trace(trace), timer(new QTimer(this)) {
+Graphics::Graphics(QWidget *parent, std::shared_ptr<Map> map, int iters,
+                   int trace)
+    : QWidget(parent), map(map), iters(iters), i(0), trace(trace),
+      timer(new QTimer(this)) {
     this->resize(Graphics::SIZE, Graphics::SIZE);
 
     this->image =
