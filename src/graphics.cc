@@ -48,17 +48,19 @@ void Graphics::draw() {
 }
 
 void Graphics::step() {
+
+    if (this->i < this->iters) {
     this->map->compute();
+    }
 
     if (this->i % this->trace == 0) {
         this->draw();
     }
-
-    this->i++;
-
     if (this->i == this->iters) {
         this->close();
     }
+    this->i++;
+
 }
 
 void Graphics::paintEvent(QPaintEvent *) {

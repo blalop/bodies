@@ -41,20 +41,20 @@ int main(int argc, char **argv) {
     }
     std::cin >> map;
 
-    //QApplication app(argc, argv);
-    //Graphics graphics(nullptr, map, iters, trace);
+    QApplication app(argc, argv);
+    Graphics graphics(nullptr, map, iters, trace);
 
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
-    //int exec = app.exec();
-    for (int i = 0; i < iters; i++) {
+    int exec = app.exec();
+    /*for (int i = 0; i < iters; i++) {
         map->compute();
         if (i % trace == 0) {
             std::cout << i << std::endl;
             std::cout << map << std::endl;
         }
-    }
+    }*/
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
     std::cout << time_span.count() << " seconds" << std::endl;
-    return 0;
+    return exec;
 }

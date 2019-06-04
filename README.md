@@ -2,7 +2,7 @@
 
 A N-Body simulation.
 
-This repo contains my Bachelor's thesis. It is a n-body simulation.
+This repo contains my Bachelor's thesis.
 
 It has three configurations:
 * brute: brute force method

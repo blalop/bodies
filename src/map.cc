@@ -100,9 +100,8 @@ MapParallel::~MapParallel() {
 }
 
 void MapParallel::compute() {
-    this->entry.wait();
     this->i++;
-
+    this->entry.wait();
 }
 
 void MapParallel::threadRoutine(int id) {
