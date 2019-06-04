@@ -28,13 +28,13 @@ int main(int argc, char **argv) {
     std::shared_ptr<Map> map;
     switch (model) {
     case BRUTE:
-        map = std::shared_ptr<Map>(new MapBrute(DEFAULT_DT));
+        map = std::shared_ptr<Map>(new MapBrute(DEFAULT_DT, iters));
         break;
     case BHTREE:
-        map = std::shared_ptr<Map>(new MapBHTree(DEFAULT_DT));
+        map = std::shared_ptr<Map>(new MapBHTree(DEFAULT_DT, iters));
         break;
     case PARALLEL:
-        map = std::shared_ptr<Map>(new MapParallel(DEFAULT_DT));
+        map = std::shared_ptr<Map>(new MapParallel(DEFAULT_DT, iters));
         break;
     default:
         return 1;

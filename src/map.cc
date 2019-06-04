@@ -2,9 +2,10 @@
 
 #include "vector2d.hh"
 
-
 // Base map
-Map::Map(double deltatime) : deltatime(deltatime) {}
+Map::Map(double deltatime, int iters) : deltatime(deltatime), iters(iters) {}
+
+Map::~Map() {}
 
 std::vector<Body> Map::getBodies() const { return this->bodies; }
 
@@ -38,7 +39,7 @@ std::ostream &operator<<(std::ostream &s, const std::shared_ptr<Map> map) {
 }
 
 // Brute force based map
-MapBrute::MapBrute(double deltatime) : Map(deltatime) {}
+MapBrute::MapBrute(double deltatime, int iters) : Map(deltatime, iters) {}
 
 void MapBrute::compute() {
     for (unsigned i = 0; i < this->bodies.size(); i++) {
@@ -56,7 +57,7 @@ void MapBrute::compute() {
 }
 
 // BHTree based map
-MapBHTree::MapBHTree(double deltatime) : Map(deltatime) {}
+MapBHTree::MapBHTree(double deltatime, int iters) : Map(deltatime, iters) {}
 
 void MapBHTree::compute() {
     BHTree bhtree(this->quadrant);
@@ -76,15 +77,15 @@ void MapBHTree::compute() {
 }
 
 // Parallel map
-MapParallel::MapParallel(double deltatime)
-    : Map(deltatime), entry(MapParallel::THREADS),
-      draw(MapParallel::THREADS + 1), build(MapParallel::THREADS),
-      calculate(MapParallel::THREADS), bhtree(this->quadrant) {
+MapParallel::MapParallel(double deltatime, int iters)
+    : Map(deltatime, iters), entry(MapParallel::THREADS + 1),
+      build(MapParallel::THREADS), calculate(MapParallel::THREADS),
+      bhtree(this->quadrant) {
 
     this->trees = {
-            new BHTree(this->quadrant.nw()), new BHTree(this->quadrant.ne()),
-            new BHTree(this->quadrant.sw()), new BHTree(this->quadrant.se())};
-        BHTree bhtree(this->quadrant);
+        new BHTree(this->quadrant.nw()), new BHTree(this->quadrant.ne()),
+        new BHTree(this->quadrant.sw()), new BHTree(this->quadrant.se())};
+    BHTree bhtree(this->quadrant);
 
     this->threads.reserve(MapParallel::THREADS);
     for (int i = 0; i < MapParallel::THREADS; i++) {
@@ -92,10 +93,21 @@ MapParallel::MapParallel(double deltatime)
     }
 }
 
-void MapParallel::compute() { this->draw.wait(); }
+MapParallel::~MapParallel() {
+    for (int i = 0; i < MapParallel::THREADS; i++) {
+        this->threads[i].join();
+    }
+}
+
+void MapParallel::compute() {
+    this->entry.wait();
+    this->i++;
+
+}
 
 void MapParallel::threadRoutine(int id) {
-    while (true) {
+    while (this->i < this->iters) {
+        this->entry.wait();
         if (id == 0) {
             for (Body &body : this->bodies) {
                 if (body.in(this->quadrant.nw())) {
@@ -108,9 +120,9 @@ void MapParallel::threadRoutine(int id) {
                     this->qBodies[3].push_back(&body);
                 }
             }
+        } else {
+            std::this_thread::yield();
         }
-
-        this->entry.wait();
 
         for (Body *body : this->qBodies[id]) {
             if (body->in(this->trees[id]->getQuadrant())) {
@@ -132,13 +144,5 @@ void MapParallel::threadRoutine(int id) {
             body->computeVelocity(this->deltatime);
             body->computePosition(this->deltatime);
         }
-
-        this->draw.wait();
-    }
-}
-
-void MapParallel::join() {
-    for (int i = 0; i < MapParallel::THREADS; i++) {
-        this->threads[i].join();
     }
 }
