@@ -50,17 +50,17 @@ void Graphics::draw() {
 void Graphics::step() {
 
     if (this->i < this->iters) {
-    this->map->compute();
+        this->map->compute();
     }
 
     if (this->i % this->trace == 0) {
-        this->draw();
+        // this->draw();
+        std::cout << i << std::endl << this->map << std::endl;
     }
     if (this->i == this->iters) {
         this->close();
     }
     this->i++;
-
 }
 
 void Graphics::paintEvent(QPaintEvent *) {

@@ -14,6 +14,7 @@ class Quadrant {
     Quadrant ne() const;
     Quadrant sw() const;
     Quadrant se() const;
+    friend std::ostream &operator<<(std::ostream &s, const Quadrant b);
 
   private:
     Vector2D<double> center;

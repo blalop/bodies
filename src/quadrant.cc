@@ -40,3 +40,8 @@ Quadrant Quadrant::se() const {
     double y = this->center.y + this->dim / 4;
     return Quadrant(Vector2D<double>(x, y), this->dim / 2);
 }
+
+std::ostream &operator<<(std::ostream &s, const Quadrant b) {
+    std::cout << b.center << " : " << b.dim;
+    return s;
+}

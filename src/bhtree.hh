@@ -15,7 +15,7 @@ class BHTree {
     void updateForce(Body &body) const;
     Quadrant getQuadrant() const;
 
-  //private:
+  private:
     Body body;
     Quadrant quadrant;
     BHTree *nw, *ne, *sw, *se;
@@ -25,4 +25,4 @@ class BHTree {
     constexpr static double THETA = 0.5;
 };
 
-#endif // QUADTREE_HH
+#endif // BHTREE_HH

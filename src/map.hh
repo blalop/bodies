@@ -19,9 +19,8 @@ class Map {
     std::vector<Body> getBodies() const;
     Quadrant getQuadrant() const;
     virtual void compute() = 0;
-    friend std::istream &operator>>(std::istream &s, std::shared_ptr<Map> map);
-    friend std::ostream &operator<<(std::ostream &s,
-                                    const std::shared_ptr<Map> map);
+    friend std::istream &operator>>(std::istream &s, Map *map);
+    friend std::ostream &operator<<(std::ostream &s, Map *map);
 
   protected:
     double deltatime;
@@ -51,13 +50,11 @@ class MapParallel : public Map {
 
   private:
     std::vector<std::thread> threads;
-    static constexpr int THREADS = 4;
     boost::barrier entry, build, calculate;
+    static constexpr int THREADS = 4;
     std::array<BHTree *, MapParallel::THREADS> trees;
     std::array<std::vector<Body *>, MapParallel::THREADS> qBodies;
     std::atomic_int32_t i;
-
-    BHTree bhtree;
 };
 
 #endif // MAP_HH
