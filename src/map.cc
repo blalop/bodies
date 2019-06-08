@@ -80,64 +80,83 @@ void MapBHTree::compute() {
 
 // Parallel map
 MapParallel::MapParallel(double deltatime, int iters)
-    : Map(deltatime, iters), entry(MapParallel::THREADS + 1),
-      build(MapParallel::THREADS), calculate(MapParallel::THREADS) {
+    : Map(deltatime, iters), entryBarrier(MapParallel::THREADS + 1),
+      sortBarrier(MapParallel::THREADS + 1),
+      buildBarrier(MapParallel::THREADS),
+      computeBarrier(MapParallel::THREADS + 1) {
 
-    this->trees = {
-        new BHTree(this->quadrant.nw()), new BHTree(this->quadrant.ne()),
-        new BHTree(this->quadrant.sw()), new BHTree(this->quadrant.se())};
+    this->trees = {std::shared_ptr<BHTree>(new BHTree(this->quadrant.nw())),
+                   std::shared_ptr<BHTree>(new BHTree(this->quadrant.ne())),
+                   std::shared_ptr<BHTree>(new BHTree(this->quadrant.sw())),
+                   std::shared_ptr<BHTree>(new BHTree(this->quadrant.se()))};
 
-    this->threads.reserve(MapParallel::THREADS);
+    this->i = 0;
     for (int i = 0; i < MapParallel::THREADS; i++) {
-        this->threads[i] = std::thread(&MapParallel::threadRoutine, this, i);
+        this->threads.push_back(
+            std::thread(&MapParallel::threadRoutine, this, i));
     }
 }
 
 MapParallel::~MapParallel() {
-    for (int i = 0; i < MapParallel::THREADS; i++) {
-        this->threads[i].join();
+    for (std::thread &thread : this->threads) {
+        thread.join();
     }
 }
 
 void MapParallel::compute() {
+    this->entryBarrier.wait();
+
+    for (Body &body : this->bodies) {
+        if (body.in(this->quadrant.nw())) {
+            this->qBodies[0].push_back(&body);
+        } else if (body.in(this->quadrant.ne())) {
+            this->qBodies[1].push_back(&body);
+        } else if (body.in(this->quadrant.sw())) {
+            this->qBodies[2].push_back(&body);
+        } else if (body.in(this->quadrant.se())) {
+            this->qBodies[3].push_back(&body);
+        }
+    }
+
+    this->trees[0].reset(new BHTree(this->quadrant.nw()));
+    this->trees[1].reset(new BHTree(this->quadrant.ne()));
+    this->trees[2].reset(new BHTree(this->quadrant.sw()));
+    this->trees[3].reset(new BHTree(this->quadrant.se()));
     this->i++;
-    this->entry.wait();
+
+    this->sortBarrier.wait();
+
+    this->computeBarrier.wait();
 }
 
 void MapParallel::threadRoutine(int id) {
-    while (this->i < this->iters) {
-        this->entry.wait();
-        if (id == 0) {
-            for (Body &body : this->bodies) {
-                if (body.in(this->quadrant.nw())) {
-                    this->qBodies[0].push_back(&body);
-                } else if (body.in(this->quadrant.ne())) {
-                    this->qBodies[1].push_back(&body);
-                } else if (body.in(this->quadrant.sw())) {
-                    this->qBodies[2].push_back(&body);
-                } else if (body.in(this->quadrant.se())) {
-                    this->qBodies[3].push_back(&body);
-                }
-            }
-        } else {
-            std::this_thread::yield();
-        }
-
-        this->build.wait();
-        for (Body *body : this->qBodies[id]) {
-            if (body->in(this->trees[id]->getQuadrant())) {
-                this->trees[id]->insert(*body);
+    auto buildTree = [](std::shared_ptr<BHTree> bhtree, std::vector<Body *> bodies) {
+        for (Body *body : bodies) {
+            if (body->in(bhtree->getQuadrant())) {
+                bhtree->insert(*body);
             }
         }
+    };
 
-        this->calculate.wait();
-        BHTree bhtree(this->quadrant);
-        bhtree.append(trees[0], trees[1], trees[2], trees[3]);
-        for (Body *body : this->qBodies[id]) {
+    auto computeTree = [](BHTree bhtree, std::vector<Body *> *bodies, double deltatime) {
+        for (Body *body : *bodies) {
             body->resetForce();
             bhtree.updateForce(*body);
-            body->computeVelocity(this->deltatime);
-            body->computePosition(this->deltatime);
+            body->computeVelocity(deltatime);
+            body->computePosition(deltatime);
         }
+    };
+
+    while (this->i < this->iters) {
+        this->entryBarrier.wait();
+        this->sortBarrier.wait();
+        buildTree(this->trees[id], this->qBodies[id]);
+        this->buildBarrier.wait();
+
+        BHTree bhtree(this->quadrant, this->trees[0], this->trees[1], this->trees[2], this->trees[3]);
+        computeTree(bhtree, &this->qBodies[id], this->deltatime);
+        this->computeBarrier.wait();
+
+        this->qBodies[id].clear();
     }
 }

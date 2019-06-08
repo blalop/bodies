@@ -54,10 +54,10 @@ void Graphics::step() {
     }
 
     if (this->i % this->trace == 0) {
-        // this->draw();
-        std::cout << i << std::endl << this->map << std::endl;
+        this->draw();
     }
     if (this->i == this->iters) {
+        //std::cout << this->map << std::endl;
         this->close();
     }
     this->i++;

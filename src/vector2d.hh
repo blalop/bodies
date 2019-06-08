@@ -15,22 +15,6 @@ template <typename T> class Vector2D {
 
     Vector2D(T x, T y) : x(x), y(y) {}
 
-    Vector2D<T> operator+(const T f) const {
-        return Vector2D(this->x + f, this->y + f);
-    }
-
-    Vector2D<T> operator-(const T f) const {
-        return Vector2D(this->x - f, this->y - f);
-    }
-
-    Vector2D<T> operator*(const T f) const {
-        return Vector2D(this->x * f, this->y * f);
-    }
-
-    Vector2D<T> operator/(const T f) const {
-        return Vector2D(this->x / f, this->y / f);
-    }
-
     Vector2D<T> operator+(const Vector2D<T> v) const {
         return Vector2D(this->x + v.x, this->y + v.y);
     }
@@ -68,18 +52,6 @@ template <typename T> class Vector2D {
     Vector2D<T> &operator-=(const Vector2D<T> v) {
         this->x -= v.x;
         this->y -= v.y;
-        return *this;
-    }
-
-    Vector2D<T> &operator*=(T f) {
-        this->x *= f;
-        this->y *= f;
-        return *this;
-    }
-
-    Vector2D<T> &operator/=(T f) {
-        this->x /= f;
-        this->y /= f;
         return *this;
     }
 

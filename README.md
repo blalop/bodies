@@ -9,6 +9,16 @@ It has three configurations:
 * bhtree: tree based method
 * parallel: tree based method (parallel)
 
+## Inputs
+
+Input must come in a file format, in which the first line indicates the number of bodies and the second the radius of the universe.
+
+From the third line, each line represents a body, with the parameters as follows:
+
+```
+mass posx posy velx vly
+```
+
 ## Dependencies
 
 * Qt 5.

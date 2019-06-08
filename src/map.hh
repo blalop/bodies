@@ -50,9 +50,9 @@ class MapParallel : public Map {
 
   private:
     std::vector<std::thread> threads;
-    boost::barrier entry, build, calculate;
+    boost::barrier entryBarrier, sortBarrier, buildBarrier, computeBarrier;
     static constexpr int THREADS = 4;
-    std::array<BHTree *, MapParallel::THREADS> trees;
+    std::array<std::shared_ptr<BHTree>, MapParallel::THREADS> trees;
     std::array<std::vector<Body *>, MapParallel::THREADS> qBodies;
     std::atomic_int32_t i;
 };
