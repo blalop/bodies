@@ -32,8 +32,8 @@ std::istream &operator>>(std::istream &s, Map *map) {
 }
 
 std::ostream &operator<<(std::ostream &s, Map *map) {
-    s << "Map: ";
-    s << map->bodies.size() << " " << map->quadrant.length() << std::endl;
+    s << map->bodies.size() << std::endl;
+    s << map->quadrant.length() / 2 << std::endl;
     for (Body body : map->bodies) {
         s << body << std::endl;
     }

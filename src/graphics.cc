@@ -48,7 +48,6 @@ void Graphics::draw() {
 }
 
 void Graphics::step() {
-
     if (this->i < this->iters) {
         this->map->compute();
     }
@@ -57,7 +56,6 @@ void Graphics::step() {
         this->draw();
     }
     if (this->i == this->iters) {
-        //std::cout << this->map << std::endl;
         this->close();
     }
     this->i++;

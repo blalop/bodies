@@ -74,7 +74,7 @@ template <typename T> class Vector2D {
     }
 
     friend std::ostream &operator<<(std::ostream &s, const Vector2D<T> v) {
-        s << std::setprecision(5) << "(" << v.x << ", " << v.y << ")";
+        s << v.x << " " << v.y;
         return s;
     }
 

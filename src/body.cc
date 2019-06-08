@@ -53,7 +53,6 @@ bool Body::operator==(const Body body) const {
 }
 
 std::ostream &operator<<(std::ostream &s, const Body body) {
-    s << "Body: " << std::setprecision(5) << body.mass << " ";
-    s << body.pos << " " << body.vel << " " << body.force;
+    s << body.mass << " " << body.pos << " " << body.vel;
     return s;
 }
