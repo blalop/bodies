@@ -1,4 +1,7 @@
 # n-body
+
+![Screenshot](screenshot.png)
+
 A N-Body simulation.
 
 This repo contains my Bachelor's thesis.
