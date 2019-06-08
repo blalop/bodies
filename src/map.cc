@@ -81,8 +81,7 @@ void MapBHTree::compute() {
 // Parallel map
 MapParallel::MapParallel(double deltatime, int iters)
     : Map(deltatime, iters), entryBarrier(MapParallel::THREADS + 1),
-      sortBarrier(MapParallel::THREADS + 1),
-      buildBarrier(MapParallel::THREADS),
+      sortBarrier(MapParallel::THREADS + 1), buildBarrier(MapParallel::THREADS),
       computeBarrier(MapParallel::THREADS + 1) {
 
     this->trees = {std::shared_ptr<BHTree>(new BHTree(this->quadrant.nw())),
@@ -130,7 +129,8 @@ void MapParallel::compute() {
 }
 
 void MapParallel::threadRoutine(int id) {
-    auto buildTree = [](std::shared_ptr<BHTree> bhtree, std::vector<Body *> bodies) {
+    auto buildTree = [](std::shared_ptr<BHTree> bhtree,
+                        std::vector<Body *> bodies) {
         for (Body *body : bodies) {
             if (body->in(bhtree->getQuadrant())) {
                 bhtree->insert(*body);
@@ -138,7 +138,8 @@ void MapParallel::threadRoutine(int id) {
         }
     };
 
-    auto computeTree = [](BHTree bhtree, std::vector<Body *> *bodies, double deltatime) {
+    auto computeTree = [](BHTree bhtree, std::vector<Body *> *bodies,
+                          double deltatime) {
         for (Body *body : *bodies) {
             body->resetForce();
             bhtree.updateForce(*body);
@@ -153,7 +154,8 @@ void MapParallel::threadRoutine(int id) {
         buildTree(this->trees[id], this->qBodies[id]);
         this->buildBarrier.wait();
 
-        BHTree bhtree(this->quadrant, this->trees[0], this->trees[1], this->trees[2], this->trees[3]);
+        BHTree bhtree(this->quadrant, this->trees[0], this->trees[1],
+                      this->trees[2], this->trees[3]);
         computeTree(bhtree, &this->qBodies[id], this->deltatime);
         this->computeBarrier.wait();
 

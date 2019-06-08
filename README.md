@@ -33,16 +33,27 @@ mass posx posy velx vly
 
 ### Provided inputs
 `10k.txt`: 100000 bodies orbiting in an elliptical way.
+
 `10k.txt`: 200000 bodies orbiting in an elliptical way.
+
 `30k.txt`: 300000 bodies orbiting in an elliptical way.
+
 `asteroids.txt`: 1000 asteroids orbiting around a star.
+
 `cluster.txt`: A 2500 particle cloud.
+
 `collapse.txt`: A 2500 particle cloud collapses into a galaxy.
+
 `dual.txt`: Two galaxies orbiting each other.
+
 `galaxy.txt`: A galaxy moving through space.
+
 `merge.txt`: Four 1000 particles collapse.
+
 `planets.txt`: A star system composed by 4 planets.
+
 `saturn.txt`: Saturn rings.
+
 `spiral.txt`: A round galaxy becomes a spiral one.
 
 Credits to Adam Chin and Rohan Kapadia.
