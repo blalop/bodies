@@ -14,9 +14,6 @@ It has three configurations:
 ## Dependencies
 * Qt 5.
 * C++11 onwards
-* Boost
-
-On a Debian-based system, Qt 5 is under the name of `qt5-default`. Boost libraries can be found in the package `libboost-all-dev`.
 
 ## Instructions
 ```

@@ -1,12 +1,13 @@
 #ifndef MAP_HH
 #define MAP_HH
 
+#include "barrier.hh"
 #include "bhtree.hh"
 #include "body.hh"
 #include "quadrant.hh"
 
 #include <array>
-#include <boost/thread/barrier.hpp>
+#include <atomic>
 #include <iostream>
 #include <memory>
 #include <thread>
@@ -50,7 +51,7 @@ class MapParallel : public Map {
 
   private:
     std::vector<std::thread> threads;
-    boost::barrier entryBarrier, sortBarrier, buildBarrier, computeBarrier;
+    Barrier entryBarrier, sortBarrier, buildBarrier, computeBarrier;
     static constexpr int THREADS = 4;
     std::array<std::shared_ptr<BHTree>, MapParallel::THREADS> trees;
     std::array<std::vector<Body *>, MapParallel::THREADS> qBodies;
