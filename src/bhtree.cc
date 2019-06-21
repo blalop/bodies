@@ -3,7 +3,7 @@
 const Body EMPTY_BODY;
 
 BHTree::BHTree(Quadrant quadrant)
-    : body(EMPTY_BODY), quadrant(quadrant), groups(0), avgSons(0) {
+    : body(EMPTY_BODY), quadrant(quadrant), groups(0) {
     this->nw = this->ne = this->sw = this->se = nullptr;
 }
 
@@ -47,7 +47,6 @@ void BHTree::updateForce(Body &body) {
         double d = this->body.getDistanceTo(body);
         if (s / d < BHTree::THETA) {
             // this->groups++;
-            // this->avgSons = (this->avgSons + this->countSons()) / 2;
             body.computeForce(this->body);
         } else {
             this->nw->updateForce(body);
@@ -63,17 +62,6 @@ void BHTree::updateForce(Body &body) {
 Quadrant BHTree::getQuadrant() const { return this->quadrant; }
 
 int BHTree::getGroups() const { return this->groups; }
-
-int BHTree::getAvgSons() const { return this->avgSons; }
-
-int BHTree::countSons() const {
-    if (this->isInternal()) {
-        return this->nw->countSons() + this->ne->countSons() +
-               this->sw->countSons() + this->se->countSons();
-    } else {
-        return 1;
-    }
-}
 
 bool BHTree::isInternal() const {
     return this->nw || this->ne || this->sw || this->se;
