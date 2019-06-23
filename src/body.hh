@@ -9,6 +9,7 @@
 class Body {
   public:
     Body();
+    Body(const Body &) = default;
     Body(double mass, Vector2D<double> pos, Vector2D<double> vel);
     Vector2D<double> getPos() const;
     bool in(Quadrant q) const;

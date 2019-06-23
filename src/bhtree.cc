@@ -2,15 +2,14 @@
 
 const Body EMPTY_BODY;
 
-BHTree::BHTree(Quadrant quadrant)
-    : body(EMPTY_BODY), quadrant(quadrant), groups(0) {
+BHTree::BHTree(Quadrant quadrant) : body(EMPTY_BODY), quadrant(quadrant) {
     this->nw = this->ne = this->sw = this->se = nullptr;
 }
 
 BHTree::BHTree(Quadrant quadrant, std::shared_ptr<BHTree> nw,
                std::shared_ptr<BHTree> ne, std::shared_ptr<BHTree> sw,
                std::shared_ptr<BHTree> se)
-    : quadrant(quadrant), groups(0), avgSons(0) {
+    : quadrant(quadrant) {
     this->nw = nw;
     this->ne = ne;
     this->sw = sw;
@@ -46,7 +45,6 @@ void BHTree::updateForce(Body &body) {
         double s = this->quadrant.length();
         double d = this->body.getDistanceTo(body);
         if (s / d < BHTree::THETA) {
-            // this->groups++;
             body.computeForce(this->body);
         } else {
             this->nw->updateForce(body);
@@ -60,8 +58,6 @@ void BHTree::updateForce(Body &body) {
 }
 
 Quadrant BHTree::getQuadrant() const { return this->quadrant; }
-
-int BHTree::getGroups() const { return this->groups; }
 
 bool BHTree::isInternal() const {
     return this->nw || this->ne || this->sw || this->se;

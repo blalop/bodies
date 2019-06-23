@@ -13,8 +13,6 @@ constexpr int DEFAULT_TRACE = 1;
 constexpr double DEFAULT_DT = 1;
 
 int main(int argc, char **argv) {
-    using namespace std::chrono;
-
     if (argc == 1) {
         std::cerr << "Usage: " << argv[0] << " model [iterations] [trace]"
                   << std::endl;
@@ -41,10 +39,10 @@ int main(int argc, char **argv) {
     QApplication app(argc, argv);
     Graphics graphics(nullptr, map, iters, trace);
 
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
     int exec = app.exec();
-    high_resolution_clock::time_point t2 = high_resolution_clock::now();
-    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
     std::cout << time_span.count() << " seconds" << std::endl;
     return exec;
 }

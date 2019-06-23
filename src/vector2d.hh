@@ -11,6 +11,8 @@ template <typename T> class Vector2D {
 
     Vector2D() : x(0.0), y(0.0) {}
 
+    Vector2D(const Vector2D<T> &) = default;
+
     Vector2D(T t) : x(t), y(t) {}
 
     Vector2D(T x, T y) : x(x), y(y) {}

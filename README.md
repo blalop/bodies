@@ -19,7 +19,7 @@ It has three configurations:
 ```
 qmake
 make
-bin/nbody model [iterations] [trace]
+bin/nbody configuration [iterations] [trace]
 ```
 
 ## Inputs
@@ -31,12 +31,14 @@ From the third line, each line represents a body, with the parameters as follows
 mass posx posy velx vly
 ```
 
+The program reads the input file from the standard input.
+
 ### Provided inputs
-`10k.txt`: 100000 bodies orbiting in an elliptical way.
+`10k.txt`: 10000 bodies orbiting in an elliptical way.
 
-`10k.txt`: 200000 bodies orbiting in an elliptical way.
+`10k.txt`: 20000 bodies orbiting in an elliptical way.
 
-`30k.txt`: 300000 bodies orbiting in an elliptical way.
+`30k.txt`: 30000 bodies orbiting in an elliptical way.
 
 `asteroids.txt`: 1000 asteroids orbiting around a star.
 

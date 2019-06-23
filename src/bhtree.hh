@@ -16,17 +16,13 @@ class BHTree {
     void insert(const Body body);
     void updateForce(Body &body);
     Quadrant getQuadrant() const;
-    int getGroups() const;
-    int getAvgSons() const;
 
   private:
     Body body;
     Quadrant quadrant;
     std::shared_ptr<BHTree> nw, ne, sw, se;
-    int groups, avgSons;
     bool isInternal() const;
     void placeBody(Body body);
-    int countSons() const;
 
     constexpr static double THETA = 0.5;
 };
