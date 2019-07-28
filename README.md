@@ -58,4 +58,4 @@ The program reads the input file from the standard input.
 
 `spiral.txt`: A round galaxy becomes a spiral one.
 
-Credits to Adam Chin and Rohan Kapadia.
+Credits of the input files to Adam Chin and Rohan Kapadia.
